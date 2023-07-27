@@ -1,12 +1,4 @@
-use reqwest::Error;
 use serde::Deserialize;
-
-#[derive(Debug)]
-pub enum ClientError {
-    ReqwestError(Error),
-    ParseError(std::string::ParseError),
-    SearchError(String),
-}
 
 #[derive(Debug, Deserialize)]
 pub struct GiphyResponse {
