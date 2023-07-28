@@ -1,6 +1,6 @@
 use async_trait::async_trait;
-use crate::configuration::dto::TerminalConfig;
-use crate::configuration::errors::RepositoryError;
+use crate::repositories::configuration::dto::TerminalConfig;
+use crate::repositories::configuration::errors::RepositoryError;
 
 #[async_trait]
 pub trait TerminalConfigurationRepository {

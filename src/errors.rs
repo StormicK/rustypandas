@@ -1,10 +1,10 @@
 #[derive(Debug)]
 pub enum ProgramError {
-    GifAccessError(crate::gif::errors::RepositoryError),
+    GifAccessError(crate::repositories::gif::errors::RepositoryError),
     IoError(std::io::Error),
     VarError(std::env::VarError),
     RestError(reqwest::Error),
-    TerminalConfigurationAccessError(crate::configuration::errors::RepositoryError),
+    TerminalConfigurationAccessError(crate::repositories::configuration::errors::RepositoryError),
 }
 
 impl From<std::io::Error> for ProgramError {
@@ -19,8 +19,8 @@ impl From<std::env::VarError> for ProgramError {
     }
 }
 
-impl From<crate::gif::errors::RepositoryError> for ProgramError {
-    fn from(error: crate::gif::errors::RepositoryError) -> Self {
+impl From<crate::repositories::gif::errors::RepositoryError> for ProgramError {
+    fn from(error: crate::repositories::gif::errors::RepositoryError) -> Self {
         ProgramError::GifAccessError(error)
     }
 }
@@ -31,8 +31,8 @@ impl From<reqwest::Error> for ProgramError {
     }
 }
 
-impl From<crate::configuration::errors::RepositoryError> for ProgramError {
-    fn from(error: crate::configuration::errors::RepositoryError) -> Self {
+impl From<crate::repositories::configuration::errors::RepositoryError> for ProgramError {
+    fn from(error: crate::repositories::configuration::errors::RepositoryError) -> Self {
         ProgramError::TerminalConfigurationAccessError(error)
     }
 }

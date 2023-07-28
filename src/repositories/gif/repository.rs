@@ -2,8 +2,8 @@ use reqwest::Client;
 use url::Url;
 use async_trait::async_trait;
 
-use crate::gif::dto::GiphyResponse;
-use crate::gif::errors::RepositoryError;
+use crate::repositories::gif::dto::GiphyResponse;
+use crate::repositories::gif::errors::RepositoryError;
 
 #[async_trait]
 pub trait GifRepository {

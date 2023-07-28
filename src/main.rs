@@ -1,8 +1,6 @@
-mod gif;
-use gif::repository::{RESTGifRepository, GifRepository};
-
-mod configuration;
-use configuration::repository::{JsonConfigurationRepository, TerminalConfigurationRepository};
+mod repositories;
+use repositories::gif::repository::{RESTGifRepository, GifRepository};
+use repositories::configuration::repository::{JsonConfigurationRepository, TerminalConfigurationRepository};
 
 mod errors;
 use errors::ProgramError;
