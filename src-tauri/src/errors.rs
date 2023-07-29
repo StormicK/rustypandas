@@ -5,6 +5,7 @@ pub enum ProgramError {
     VarError(std::env::VarError),
     RestError(reqwest::Error),
     TerminalConfigurationAccessError(crate::repositories::configuration::errors::RepositoryError),
+    ModelError(crate::models::errors::ConfigurationModelError),
 }
 
 impl From<std::io::Error> for ProgramError {
@@ -34,5 +35,11 @@ impl From<reqwest::Error> for ProgramError {
 impl From<crate::repositories::configuration::errors::RepositoryError> for ProgramError {
     fn from(error: crate::repositories::configuration::errors::RepositoryError) -> Self {
         ProgramError::TerminalConfigurationAccessError(error)
+    }
+}
+
+impl From<crate::models::errors::ConfigurationModelError> for ProgramError {
+    fn from(error: crate::models::errors::ConfigurationModelError) -> Self {
+        ProgramError::ModelError(error)
     }
 }

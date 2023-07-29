@@ -1,0 +1,65 @@
+// Prevents additional console window on Windows in release, DO NOT REMOVE!!
+#![cfg_attr(not(debug_assertions), windows_subsystem = "windows")]
+use tauri::{Manager, SystemTray, SystemTrayMenu};
+
+#[macro_use]
+extern crate lazy_static;
+
+mod controllers;
+mod models;
+mod repositories;
+
+use controllers::configuration::ConfigurationController;
+use models::configuration::ConfigurationModel;
+use repositories::configuration::repository::JsonConfigurationRepository;
+use repositories::gif::repository::RESTGifRepository;
+
+use dotenv::dotenv;
+
+lazy_static! {
+    static ref CONFIGURATION_CONTROLLER: ConfigurationController = {
+        dotenv().ok();
+
+        let gif_repository: RESTGifRepository =
+            RESTGifRepository::new(std::env::var("GIPHY_API_KEY").unwrap());
+        let configuration_repository: JsonConfigurationRepository = JsonConfigurationRepository::new(String::from("C:\\Users\\André Bruns\\AppData\\Local\\Packages\\Microsoft.WindowsTerminal_8wekyb3d8bbwe\\LocalState\\settings.json"));
+        let configuration_model: ConfigurationModel =
+            ConfigurationModel::new(configuration_repository, gif_repository);
+
+        controllers::configuration::ConfigurationController::new(configuration_model)
+    };
+}
+
+// Learn more about Tauri commands at https://tauri.app/v1/guides/features/command
+#[tauri::command]
+async fn refresh_panda() -> () {
+    let _ = CONFIGURATION_CONTROLLER.refresh_panda().await;
+
+    ()
+}
+
+fn main() {
+    let tray_menu = SystemTrayMenu::new();
+    let system_tray = SystemTray::new().with_menu(tray_menu);
+
+    tauri::Builder::default()
+        .invoke_handler(tauri::generate_handler![refresh_panda])
+        .system_tray(system_tray)
+        .on_system_tray_event(|app, event| match event {
+            tauri::SystemTrayEvent::LeftClick { .. } => {
+                let window = app.get_window("main").unwrap();
+                window.show().unwrap();
+                window.set_focus().unwrap();
+            }
+            _ => {}
+        })
+        .on_window_event(|event| match event.event() {
+            tauri::WindowEvent::CloseRequested { api, .. } => {
+                event.window().hide().unwrap();
+                api.prevent_close();
+            }
+            _ => {}
+        })
+        .run(tauri::generate_context!())
+        .expect("error while running tauri application");
+}

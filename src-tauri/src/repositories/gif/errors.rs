@@ -27,3 +27,9 @@ impl From<serde_json::Error> for RepositoryError {
         RepositoryError::DataAccessError(error.to_string())
     }
 }
+
+impl From<std::env::VarError> for RepositoryError {
+    fn from(error: std::env::VarError) -> Self {
+        RepositoryError::DataAccessError(error.to_string())
+    }
+}

@@ -17,6 +17,7 @@ pub struct TerminalConfig {
     pub new_tab_menu: Vec<NewTabMenu>,
     pub profiles: Profiles,
     pub schemes: Vec<Scheme>,
+    pub theme: Option<String>,
     pub themes: Vec<Theme>,
 }
 
@@ -107,15 +108,39 @@ pub struct DefaultProfile {
     // Add fields here if needed
 }
 
+// {
+//     "backgroundImage": "C:\\Users\\Andr\u00e9 Bruns\\AppData\\Local\\giphy_client\\red_panda.gif",
+//     "backgroundImageOpacity": 0.33,
+//     "colorScheme": "Tango Dark",
+//     "guid": "{574e775e-4f2a-5b96-ac1e-a2962a402336}",
+//     "hidden": false,
+//     "name": "PowerShell",
+//     "opacity": 66,
+//     "scrollbarState": "always",
+//     "source": "Windows.Terminal.PowershellCore"
+// }
 #[derive(Debug, Deserialize, Serialize)]
 pub struct Profile {
     #[serde(rename = "backgroundImage")]
     pub background_image: Option<String>,
-    pub commandline: Option<String>,
+    #[serde(rename = "backgroundImageStretchMode")]
+    pub background_image_stretch_mode: Option<String>,
+    #[serde(rename = "backgroundImageOpacity")]
+    pub background_image_opacity: Option<f64>,
+    #[serde(rename = "backgroundImageAlignment")]
+    pub background_image_alignment: Option<String>,
+    #[serde(rename = "colorScheme")]
+    pub color_scheme: Option<String>,
     pub guid: String,
     pub hidden: bool,
     pub name: String,
+    #[serde(rename = "opacity")]
+    pub opacity: Option<u8>,
+    #[serde(rename = "scrollbarState")]
+    pub scrollbar_state: Option<String>,
     pub source: Option<String>,
+    #[serde(rename = "experimental.retroTerminalEffect")]
+    pub retro_terminal_effect: Option<bool>,
 }
 
 #[derive(Debug, Deserialize, Serialize)]
