@@ -1,8 +1,8 @@
 [package]
 name = "tauri-rustypandas"
-version = "0.0.0"
-description = "A Tauri App"
-authors = ["you"]
+version = "0.0.1"
+description = "Rusty Pandas - Theme Refresher"
+authors = ["StormicK"]
 license = ""
 repository = ""
 edition = "2021"

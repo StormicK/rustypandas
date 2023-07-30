@@ -7,7 +7,7 @@
     "withGlobalTauri": true
   },
   "package": {
-    "productName": "tauri-rustypandas",
+    "productName": "rustypandas",
     "version": "0.0.1"
   },
   "tauri": {

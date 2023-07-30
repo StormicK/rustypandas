@@ -3067,18 +3067,6 @@ source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "7ffc183a10b4478d04cbbbfc96d0873219d962dd5accaff2ffbd4ceb7df837f4"
 
 [[package]]
-name = "rustypandas"
-version = "0.0.1"
-dependencies = [
- "js-sys",
- "leptos",
- "serde",
- "serde-wasm-bindgen",
- "wasm-bindgen",
- "wasm-bindgen-futures",
-]
-
-[[package]]
 name = "ryu"
 version = "1.0.15"
 source = "registry+https://github.com/rust-lang/crates.io-index"
@@ -3807,7 +3795,7 @@ dependencies = [
 
 [[package]]
 name = "tauri-rustypandas"
-version = "0.0.0"
+version = "0.0.1"
 dependencies = [
  "async-trait",
  "dirs",
@@ -4167,6 +4155,18 @@ name = "ucd-trie"
 version = "0.1.6"
 source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "ed646292ffc8188ef8ea4d1e0e0150fb15a5c2e12ad9b8fc191ae7a8a7f3c4b9"
+
+[[package]]
+name = "ui-rustypandas"
+version = "0.0.1"
+dependencies = [
+ "js-sys",
+ "leptos",
+ "serde",
+ "serde-wasm-bindgen",
+ "wasm-bindgen",
+ "wasm-bindgen-futures",
+]
 
 [[package]]
 name = "unicode-bidi"
