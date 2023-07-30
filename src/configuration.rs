@@ -3,6 +3,7 @@ use leptos::*;
 use serde::{Deserialize, Serialize};
 use serde_wasm_bindgen::to_value;
 use wasm_bindgen::prelude::*;
+use chrono::prelude::*;
 
 #[wasm_bindgen]
 extern "C" {
@@ -23,6 +24,8 @@ pub fn Configuration(cx: Scope) -> impl IntoView {
         set_search_query.set(v);
     };
 
+    let (last_updated, set_last_updated) = create_signal(cx, String::from(""));
+
     let refresh_panda = move |ev: SubmitEvent| {
         ev.prevent_default();
         spawn_local(async move {
@@ -36,13 +39,15 @@ pub fn Configuration(cx: Scope) -> impl IntoView {
 
             invoke("refresh_panda", args)
                 .await;
+
+            set_last_updated.set(format!("Last updated: {}", Local::now().to_string()));
         });
     };
 
     view! { cx,
         <main class="container">
             <head>
-                <title>Red Panda Theme Refresh</title>
+                <title>Theme Refresh</title>
             </head>
             <body>
                 <h1>Theme Refresher</h1>
@@ -54,6 +59,7 @@ pub fn Configuration(cx: Scope) -> impl IntoView {
                         on:input=update_search_query
                     />
                     <button type="submit">"Refresh"</button>
+                    <p>{ move || last_updated.get() }</p>
                 </form>
             </body>
         </main>
