@@ -1,5 +1,6 @@
 // Prevents additional console window on Windows in release, DO NOT REMOVE!!
 #![cfg_attr(not(debug_assertions), windows_subsystem = "windows")]
+use dirs::data_local_dir;
 use tauri::{Manager, SystemTray, SystemTrayMenu};
 
 #[macro_use]
@@ -22,7 +23,10 @@ lazy_static! {
 
         let gif_repository: RESTGifRepository =
             RESTGifRepository::new(std::env::var("GIPHY_API_KEY").unwrap());
-        let configuration_repository: JsonConfigurationRepository = JsonConfigurationRepository::new(String::from("C:\\Users\\André Bruns\\AppData\\Local\\Packages\\Microsoft.WindowsTerminal_8wekyb3d8bbwe\\LocalState\\settings.json"));
+
+        //get appdata directory
+        let path = data_local_dir().unwrap();
+        let configuration_repository: JsonConfigurationRepository = JsonConfigurationRepository::new(format!("{}\\Packages\\Microsoft.WindowsTerminal_8wekyb3d8bbwe\\LocalState\\settings.json", path.to_str().unwrap()));
         let configuration_model: ConfigurationModel =
             ConfigurationModel::new(configuration_repository, gif_repository);
 

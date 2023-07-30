@@ -6,7 +6,6 @@ use async_trait::async_trait;
 use dirs::data_local_dir;
 use reqwest::Client;
 use url::Url;
-use rand::prelude::SliceRandom;
 
 use crate::repositories::gif::dto::GiphyResponse;
 use crate::repositories::gif::errors::RepositoryError;
@@ -86,19 +85,7 @@ impl RESTGifRepository {
 #[async_trait]
 impl GifRepository for RESTGifRepository {
     async fn get_gif_by_search(&self, query: &str) -> Result<String, RepositoryError> {
-        let search_modifiers = ["playing", "pull up", "chew", "tired", "san diego"];
-        let search_modifier = match search_modifiers.choose(&mut rand::thread_rng()) {
-            Some(search_modifier) => search_modifier,
-            None => {
-                return Err(RepositoryError::DataAccessError(String::from(
-                    "Could not choose search modifier",
-                )))
-            }
-        };
-
-        println!("Searching for {} {}", query, search_modifier);
-
-        let query = format!("{} {}", query, search_modifier);
+        println!("Searching for: \"{}\"", query);
 
         let url = self.build_search_url(&query)?;
 

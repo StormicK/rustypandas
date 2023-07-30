@@ -1,9 +1,4 @@
 /* Red Panda Theme */
-
-.logo.leptos:hover {
-  filter: drop-shadow(0 0 2em #DB8758);
-}
-
 :root {
   font-family: 'Arial', sans-serif;
   font-size: 16px;
@@ -12,10 +7,6 @@
 
   color: #3D1F16; /* Brownish text color */
   background-color: #FCE7D2; /* Light beige background */
-  background-image: url('public/red-panda.svg'); /* Red panda-themed background image */
-  background-size: contain; /* Scale the background to fit the container without repetition */
-  background-repeat: no-repeat; /* Make the background appear only once */
-  background-position: center; /* Center the background image */
   
   font-synthesis: none;
   text-rendering: optimizeLegibility;
@@ -31,17 +22,6 @@
   flex-direction: column;
   justify-content: center;
   text-align: center;
-}
-
-.logo {
-  height: 6em;
-  padding: 1.5em;
-  will-change: filter;
-  transition: 0.75s;
-}
-
-.logo.tauri:hover {
-  filter: drop-shadow(0 0 2em #B13D14); /* Red panda-themed shadow on Tauri logo */
 }
 
 .row {

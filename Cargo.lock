@@ -3067,6 +3067,18 @@ source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "7ffc183a10b4478d04cbbbfc96d0873219d962dd5accaff2ffbd4ceb7df837f4"
 
 [[package]]
+name = "rustypandas"
+version = "0.0.1"
+dependencies = [
+ "js-sys",
+ "leptos",
+ "serde",
+ "serde-wasm-bindgen",
+ "wasm-bindgen",
+ "wasm-bindgen-futures",
+]
+
+[[package]]
 name = "ryu"
 version = "1.0.15"
 source = "registry+https://github.com/rust-lang/crates.io-index"
@@ -3809,18 +3821,6 @@ dependencies = [
  "tauri-build",
  "tokio",
  "url",
-]
-
-[[package]]
-name = "tauri-rustypandas-ui"
-version = "0.0.0"
-dependencies = [
- "js-sys",
- "leptos",
- "serde",
- "serde-wasm-bindgen",
- "wasm-bindgen",
- "wasm-bindgen-futures",
 ]
 
 [[package]]
