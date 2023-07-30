@@ -23,8 +23,11 @@ jobs:
         run: |
           sudo apt-get update
           sudo apt-get install -y libgtk-3-dev libwebkit2gtk-4.0-dev libappindicator3-dev librsvg2-dev patchelf
-      - name: install frontend dependencies
-        run: leptos install # Use leptos here instead of yarn, npm, or pnpm
+      - name: Install cargo-sort from git
+        uses: baptiste0928/cargo-install@v2
+        with:
+          crate: tauri
+          create: leptos
       - uses: tauri-apps/tauri-action@v0
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
