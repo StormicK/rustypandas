@@ -17,9 +17,9 @@ Follow these instructions to set up the development environment and start using 
 Make sure you have the following tools installed:
 
 - [Rust](https://www.rust-lang.org/) - To build and run the project.
-- [Cargo](https://crates.io/)
-- [Tauri](https://tauri.app/)
-- [Trunk](https://trunkrs.dev/) - To install and manage dependencies.
+- [Cargo](https://crates.io/) - Rusts Package Manager.
+- [Tauri](https://tauri.app/) - UI framework for Rust.
+- [Trunk](https://trunkrs.dev/) - Bundler for WASM.
 - [Windows Terminal](https://www.microsoft.com/en-us/p/windows-terminal/9n0dx20hk701) - The terminal in which you will apply the custom themes.
 
 ### Installation
@@ -27,8 +27,8 @@ Make sure you have the following tools installed:
 1. Clone the repository:
 
 ```bash
-git clone https://github.com/your-username/rusty-pandas.git
-cd rusty-pandas
+git clone https://github.com/StormicK/rustypandas.git
+cd rustypandas
 ```
 
 2. Install the Tauri dependencies:
@@ -58,6 +58,14 @@ cargo tauri dev
 ```
 
 This will launch Rusty Pandas.
+
+To build the application, use the following command:
+
+```bash
+cargo tauri build
+```
+
+This will create a `dist` folder containing the executable.
 
 ## Contributing
 
