@@ -31,11 +31,11 @@ lazy_static! {
 }
 
 // Learn more about Tauri commands at https://tauri.app/v1/guides/features/command
-#[tauri::command]
-async fn refresh_panda() -> () {
-    let _ = CONFIGURATION_CONTROLLER.refresh_panda().await;
+#[tauri::command(rename_all = "snake_case")]
+async fn refresh_panda(search_query: String) -> Result<(), ()> {
+    let _ = CONFIGURATION_CONTROLLER.refresh_panda(&search_query).await;
 
-    ()
+    Ok(())
 }
 
 fn main() {

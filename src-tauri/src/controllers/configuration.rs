@@ -23,8 +23,8 @@ impl ConfigurationController {
         }
     }
 
-    pub async fn refresh_panda(&self) -> Result<(), ControllerError> {
-        self.configuration_model.refresh_panda().await?;
+    pub async fn refresh_panda(&self, search_query: &str) -> Result<(), ControllerError> {
+        self.configuration_model.refresh_panda(search_query).await?;
         Ok(())
     }
 }

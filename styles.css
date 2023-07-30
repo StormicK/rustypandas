@@ -94,7 +94,7 @@ button {
   outline: none;
 }
 
-#greet-input {
+#search-input {
   margin-right: 5px;
 }
 
@@ -111,7 +111,7 @@ button {
   input,
   button {
     color: #FCE7D2; /* Light text color on dark background */
-    background-color: #3D1F16; /* Dark brown background */
+    background-color: #7c2f17; /* Dark brown background */
   }
   button:active {
     background-color: #63433A; /* Darker color on active */

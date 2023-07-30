@@ -11,7 +11,7 @@ use crate::models::errors::ConfigurationModelError;
 
 #[async_trait]
 pub trait PresetConfigurator {
-    async fn refresh_panda(&self) -> Result<(), ConfigurationModelError>;
+    async fn refresh_panda(&self, search_query: &str) -> Result<(), ConfigurationModelError>;
 }
 
 #[derive(Debug)]
@@ -34,9 +34,9 @@ impl ConfigurationModel {
 
 #[async_trait]
 impl PresetConfigurator for ConfigurationModel {
-    async fn refresh_panda(&self) -> Result<(), ConfigurationModelError> {
+    async fn refresh_panda(&self, search_query: &str) -> Result<(), ConfigurationModelError> {
         let mut terminal_config = self.terminal_config_repository.get_configuration().await?;
-        let panda_path = self.gif_repository.get_gif_by_search("red panda").await?;
+        let panda_path = self.gif_repository.get_gif_by_search(search_query).await?;
 
         let scheme = Scheme {
             background: String::from("#3D1F16"),
