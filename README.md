@@ -1,3 +1,7 @@
+<p align=center>
+  <img src="https://github.com/StormicK/rustypandas/blob/5f46c1ad342aa9e1fb7e201f13db48fc69b1f6d7/src-tauri/icons/red-panda.png" width=150 />
+</p>
+
 # Rusty Pandas - Windows Terminal Theme Configuration Tool
 
 Rusty Pandas is a theme configuration tool for Windows Terminal, designed to enhance the user experience by providing an intuitive and straightforward way to customize the appearance of Windows Terminal. It leverages Tauri and Leptos to deliver a powerful and efficient application.
