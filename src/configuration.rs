@@ -1,9 +1,8 @@
-use leptos::leptos_dom::ev::SubmitEvent;
 use leptos::*;
-use serde::{Deserialize, Serialize};
-use serde_wasm_bindgen::to_value;
 use wasm_bindgen::prelude::*;
-use chrono::prelude::*;
+
+use crate::components::color_scheme_select::ColorSchemeSelectComponent;
+use crate::components::gif_search::GifSearchComponent;
 
 #[wasm_bindgen]
 extern "C" {
@@ -11,56 +10,18 @@ extern "C" {
     async fn invoke(cmd: &str, args: JsValue) -> JsValue;
 }
 
-#[derive(Serialize, Deserialize)]
-struct SearchArgs {
-    search_query: String,
-}
-
 #[component]
-pub fn Configuration(cx: Scope) -> impl IntoView {
-    let (search_query, set_search_query) = create_signal(cx, String::from("red panda "));
-    let update_search_query = move |ev| {
-        let v = event_target_value(&ev);
-        set_search_query.set(v);
-    };
-
-    let (last_updated, set_last_updated) = create_signal(cx, String::from(""));
-
-    let refresh_panda = move |ev: SubmitEvent| {
-        ev.prevent_default();
-        spawn_local(async move {
-            if search_query.get().is_empty() {
-                return;
-            }
-
-            let args = to_value(&SearchArgs {
-                search_query: search_query.get(),
-            }).unwrap();
-
-            invoke("refresh_panda", args)
-                .await;
-
-            set_last_updated.set(format!("Last updated: {}", Local::now().to_string()));
-        });
-    };
-
+pub fn MainComponent(cx: Scope) -> impl IntoView {
     view! { cx,
         <main class="container">
             <head>
                 <title>Theme Refresh</title>
             </head>
             <body>
-                <h1>Theme Refresher</h1>
-                <form on:submit=refresh_panda>
-                    <input
-                        id="search-input"
-                        placeholder="Enter a name..."
-                        autocomplete="off"
-                        on:input=update_search_query
-                    />
-                    <button type="submit">"Refresh"</button>
-                    <p>{ move || last_updated.get() }</p>
-                </form>
+                <h1>Gif Picker</h1>
+                <GifSearchComponent/>
+                <h1>Color Scheme Picker</h1>
+                <ColorSchemeSelectComponent/>
             </body>
         </main>
     }

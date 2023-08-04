@@ -38,8 +38,8 @@
         "fullscreen": false,
         "resizable": false,
         "title": "RustyPandas",
-        "width": 430,
-        "height": 230
+        "width": 350,
+        "height": 250
       }
     ]
   }
