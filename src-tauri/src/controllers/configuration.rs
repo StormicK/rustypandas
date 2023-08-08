@@ -11,6 +11,7 @@ pub enum ControllerError {
 pub trait ConfigurationControllerTrait {
     async fn update_gif(&self, search_query: &str) -> Result<(), ControllerError>;
     async fn update_color_scheme(&self, color_scheme: &str) -> Result<(), ControllerError>;
+    async fn get_color_schemes(&self) -> Result<Vec<String>, ControllerError>;
 }
 
 impl From<ConfigurationModelError> for ControllerError {
@@ -40,5 +41,9 @@ impl ConfigurationControllerTrait for ConfigurationController {
     async fn update_color_scheme(&self, color_scheme: &str) -> Result<(), ControllerError> {
         self.configuration_model.update_color_scheme(color_scheme).await?;
         Ok(())
+    }
+    async fn get_color_schemes(&self) -> Result<Vec<String>, ControllerError> {
+        let color_schemes = self.configuration_model.get_color_schemes().await?;
+        Ok(color_schemes)
     }
 }

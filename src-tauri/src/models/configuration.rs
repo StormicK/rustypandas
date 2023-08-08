@@ -13,6 +13,7 @@ use crate::models::errors::ConfigurationModelError;
 pub trait ConfigurationModelTrait {
     async fn update_gif(&self, search_query: &str) -> Result<(), ConfigurationModelError>;
     async fn update_color_scheme(&self, color_scheme: &str) -> Result<(), ConfigurationModelError>;
+    async fn get_color_schemes(&self) -> Result<Vec<String>, ConfigurationModelError>;
 }
 
 #[derive(Debug)]
@@ -93,5 +94,17 @@ impl ConfigurationModelTrait for ConfigurationModel {
             .await?;
 
         Ok(())
+    }
+
+    async fn get_color_schemes(&self) -> Result<Vec<String>, ConfigurationModelError> {
+        let terminal_config = self.terminal_config_repository.get_configuration().await?;
+
+        let color_schemes: Vec<String> = terminal_config
+            .schemes
+            .iter()
+            .map(|s| s.name.to_string())
+            .collect();
+
+        Ok(color_schemes)
     }
 }

@@ -49,13 +49,20 @@ async fn update_color_scheme(color_scheme: String) -> Result<(), ()> {
     Ok(())
 }
 
+#[tauri::command(rename_all = "snake_case")]
+async fn get_color_schemes() -> Result<Vec<String>, ()> {
+    match CONFIGURATION_CONTROLLER.get_color_schemes().await {
+        Ok(color_schemes) => Ok(color_schemes),
+        Err(_) => Err(()),
+    }
+}
 
 fn main() {
     let tray_menu = SystemTrayMenu::new();
     let system_tray = SystemTray::new().with_menu(tray_menu);
 
     tauri::Builder::default()
-        .invoke_handler(tauri::generate_handler![update_gif, update_color_scheme])
+        .invoke_handler(tauri::generate_handler![update_gif, update_color_scheme, get_color_schemes])
         .system_tray(system_tray)
         .on_system_tray_event(|app, event| match event {
             tauri::SystemTrayEvent::LeftClick { .. } => {
