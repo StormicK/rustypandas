@@ -10,7 +10,7 @@ mod controllers;
 mod models;
 mod repositories;
 
-use controllers::configuration::ConfigurationController;
+use controllers::configuration::{ ConfigurationController, ConfigurationControllerTrait };
 use models::configuration::ConfigurationModel;
 use repositories::configuration::repository::JsonConfigurationRepository;
 use repositories::gif::repository::RESTGifRepository;
@@ -36,10 +36,25 @@ lazy_static! {
 
 // Learn more about Tauri commands at https://tauri.app/v1/guides/features/command
 #[tauri::command(rename_all = "snake_case")]
-async fn refresh_panda(search_query: String) -> Result<(), ()> {
-    let _ = CONFIGURATION_CONTROLLER.refresh_panda(&search_query).await;
+async fn update_gif(search_query: String) -> Result<(), ()> {
+    let _ = CONFIGURATION_CONTROLLER.update_gif(&search_query).await;
 
     Ok(())
+}
+
+#[tauri::command(rename_all = "snake_case")]
+async fn update_color_scheme(color_scheme: String) -> Result<(), ()> {
+    let _ = CONFIGURATION_CONTROLLER.update_color_scheme(&color_scheme).await;
+
+    Ok(())
+}
+
+#[tauri::command(rename_all = "snake_case")]
+async fn get_color_schemes() -> Result<Vec<String>, ()> {
+    match CONFIGURATION_CONTROLLER.get_color_schemes().await {
+        Ok(color_schemes) => Ok(color_schemes),
+        Err(_) => Err(()),
+    }
 }
 
 fn main() {
@@ -47,7 +62,7 @@ fn main() {
     let system_tray = SystemTray::new().with_menu(tray_menu);
 
     tauri::Builder::default()
-        .invoke_handler(tauri::generate_handler![refresh_panda])
+        .invoke_handler(tauri::generate_handler![update_gif, update_color_scheme, get_color_schemes])
         .system_tray(system_tray)
         .on_system_tray_event(|app, event| match event {
             tauri::SystemTrayEvent::LeftClick { .. } => {

@@ -1,6 +1,6 @@
 use crate::repositories::{
     configuration::{
-        dto::{Scheme, Theme},
+        dto::Scheme,
         repository::{JsonConfigurationRepository, TerminalConfigurationRepository},
     },
     gif::repository::{GifRepository, RESTGifRepository},
@@ -10,8 +10,10 @@ use async_trait::async_trait;
 use crate::models::errors::ConfigurationModelError;
 
 #[async_trait]
-pub trait PresetConfigurator {
-    async fn refresh_panda(&self, search_query: &str) -> Result<(), ConfigurationModelError>;
+pub trait ConfigurationModelTrait {
+    async fn update_gif(&self, search_query: &str) -> Result<(), ConfigurationModelError>;
+    async fn update_color_scheme(&self, color_scheme: &str) -> Result<(), ConfigurationModelError>;
+    async fn get_color_schemes(&self) -> Result<Vec<String>, ConfigurationModelError>;
 }
 
 #[derive(Debug)]
@@ -33,8 +35,8 @@ impl ConfigurationModel {
 }
 
 #[async_trait]
-impl PresetConfigurator for ConfigurationModel {
-    async fn refresh_panda(&self, search_query: &str) -> Result<(), ConfigurationModelError> {
+impl ConfigurationModelTrait for ConfigurationModel {
+    async fn update_gif(&self, search_query: &str) -> Result<(), ConfigurationModelError> {
         let mut terminal_config = self.terminal_config_repository.get_configuration().await?;
         let panda_path = self.gif_repository.get_gif_by_search(search_query).await?;
 
@@ -62,23 +64,8 @@ impl PresetConfigurator for ConfigurationModel {
             yellow: String::from("#DB8758"),
         };
 
+        terminal_config.schemes.retain(|s| s.name != "RedPanda");
         terminal_config.schemes.push(scheme);
-
-        let theme = Theme {
-            name: String::from("RedPanda"),
-            tab: crate::repositories::configuration::dto::Tab {
-                background: Some(String::from("#3D1F16")),
-                show_close_button: String::from("always"),
-                unfocused_background: Some(String::from("#3D1F16")),
-            },
-            window: crate::repositories::configuration::dto::Window {
-                application_theme: String::from("dark"),
-                use_mica: false,
-            },
-        };
-
-        terminal_config.themes.push(theme);
-        terminal_config.theme = Some(String::from("RedPanda"));
 
         for profile in terminal_config.profiles.list.iter_mut() {
             profile.background_image = Some(panda_path.clone());
@@ -86,15 +73,38 @@ impl PresetConfigurator for ConfigurationModel {
             profile.opacity = Some(97);
             profile.background_image_stretch_mode = Some(String::from("none"));
             profile.background_image_alignment = Some(String::from("bottomRight"));
-            profile.color_scheme = Some(String::from("RedPanda"));
         }
-
-        println!("Current config! {:?}", terminal_config);
 
         self.terminal_config_repository
             .update_configuration(terminal_config)
             .await?;
 
         Ok(())
+    }
+
+    async fn update_color_scheme(&self, color_scheme: &str) -> Result<(), ConfigurationModelError> {
+        let mut terminal_config = self.terminal_config_repository.get_configuration().await?;
+
+        for profile in terminal_config.profiles.list.iter_mut() {
+            profile.color_scheme = Some(color_scheme.to_string());
+        }
+
+        self.terminal_config_repository
+            .update_configuration(terminal_config)
+            .await?;
+
+        Ok(())
+    }
+
+    async fn get_color_schemes(&self) -> Result<Vec<String>, ConfigurationModelError> {
+        let terminal_config = self.terminal_config_repository.get_configuration().await?;
+
+        let color_schemes: Vec<String> = terminal_config
+            .schemes
+            .iter()
+            .map(|s| s.name.to_string())
+            .collect();
+
+        Ok(color_schemes)
     }
 }
