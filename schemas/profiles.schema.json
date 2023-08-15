@@ -1,0 +1,2488 @@
+{
+  "definitions": {
+    "KeyChordSegment": {
+      "type": "string"
+    },
+    "Color": {
+      "type": "string"
+    },
+    "ColorOrIndex": {
+      "type": "string"
+    },
+    "Coordinates": {
+      "type": "string"
+    },
+    "DynamicProfileSource": {
+      "enum": [
+        "Windows.Terminal.Wsl",
+        "Windows.Terminal.Azure",
+        "Windows.Terminal.PowershellCore"
+      ],
+      "type": "string"
+    },
+    "BellStyle": {
+      "oneOf": [
+        {
+          "type": "boolean"
+        },
+        {
+          "type": "array",
+          "items": {
+            "type": "string",
+            "enum": [
+              "audible",
+              "window",
+              "taskbar"
+            ]
+          }
+        },
+        {
+          "type": "string",
+          "enum": [
+            "audible",
+            "taskbar",
+            "window",
+            "all",
+            "none"
+          ]
+        }
+      ]
+    },
+    "BellSound": {
+      "oneOf": [
+        {
+          "type": [
+            "string",
+            "null"
+          ]
+        },
+        {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        }
+      ]
+    },
+    "AppearanceConfig": {
+      "properties": {
+        "colorScheme": {
+          "oneOf": [
+            {
+              "$ref": "#/$defs/SchemePair"
+            },
+            {
+              "type": "string"
+            }
+          ]
+        },
+        "foreground": {
+          "$ref": "#/$defs/Color",
+          "type": [
+            "string",
+            "null"
+          ]
+        },
+        "background": {
+          "$ref": "#/$defs/Color",
+          "type": [
+            "string",
+            "null"
+          ]
+        },
+        "selectionBackground": {
+          "oneOf": [
+            {
+              "$ref": "#/$defs/Color"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "cursorColor": {
+          "oneOf": [
+            {
+              "$ref": "#/$defs/Color"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "cursorShape": {
+          "enum": [
+            "bar",
+            "doubleUnderscore",
+            "emptyBox",
+            "filledBox",
+            "underscore",
+            "vintage"
+          ],
+          "type": "string"
+        },
+        "cursorHeight": {
+          "maximum": 100,
+          "minimum": 1,
+          "type": [
+            "integer",
+            "null"
+          ]
+        },
+        "backgroundImage": {
+          "oneOf": [
+            {
+              "type": [
+                "string",
+                "null"
+              ]
+            },
+            {
+              "enum": [
+                "desktopWallpaper"
+              ]
+            }
+          ],
+          "type": [
+            "string",
+            "null"
+          ]
+        },
+        "backgroundImageOpacity": {
+          "maximum": 1.0,
+          "minimum": 0.0,
+          "type": "number"
+        },
+        "backgroundImageStretchMode": {
+          "enum": [
+            "fill",
+            "none",
+            "uniform",
+            "uniformToFill"
+          ],
+          "type": "string"
+        },
+        "backgroundImageAlignment": {
+          "enum": [
+            "bottom",
+            "bottomLeft",
+            "bottomRight",
+            "center",
+            "left",
+            "right",
+            "top",
+            "topLeft",
+            "topRight"
+          ],
+          "type": "string"
+        },
+        "intenseTextStyle": {
+          "enum": [
+            "none",
+            "bold",
+            "bright",
+            "all"
+          ],
+          "type": "string"
+        },
+        "adjustIndistinguishableColors": {
+          "enum": [
+            "never",
+            "indexed",
+            "always"
+          ],
+          "type": "string"
+        },
+        "experimental.retroTerminalEffect": {
+          "type": "boolean"
+        },
+        "experimental.pixelShaderPath": {
+          "type": "string"
+        }
+      },
+      "type": "object"
+    },
+    "SchemePair": {
+      "properties": {
+        "light": {
+          "type": "string"
+        },
+        "dark": {
+          "type": "string"
+        }
+      },
+      "type": "object"
+    },
+    "FontConfig": {
+      "properties": {
+        "face": {
+          "type": "string"
+        },
+        "size": {
+          "minimum": 1,
+          "type": "number"
+        },
+        "weight": {
+          "oneOf": [
+            {
+              "enum": [
+                "thin",
+                "extra-light",
+                "light",
+                "semi-light",
+                "normal",
+                "medium",
+                "semi-bold",
+                "bold",
+                "extra-bold",
+                "black",
+                "extra-black"
+              ],
+              "type": "string"
+            },
+            {
+              "maximum": 990,
+              "minimum": 100,
+              "type": "integer"
+            }
+          ]
+        },
+        "features": {
+          "type": "object",
+          "patternProperties": {
+            "^(([A-Za-z0-9]){4})$": {
+              "type": "integer"
+            }
+          },
+          "additionalProperties": false
+        },
+        "axes": {
+          "type": "object",
+          "patternProperties": {
+            "^([A-Za-z]{4})$": {
+              "type": "number"
+            }
+          },
+          "additionalProperties": false
+        }
+      },
+      "type": "object"
+    },
+    "ProfileGuid": {
+      "type": "string"
+    },
+    "Icon": {
+      "type": [
+        "string",
+        "null"
+      ]
+    },
+    "ShortcutActionName": {
+      "enum": [
+        "adjustFontSize",
+        "clearBuffer",
+        "closeOtherPanes",
+        "closeOtherTabs",
+        "closePane",
+        "closeTab",
+        "closeTabsAfter",
+        "closeWindow",
+        "commandPalette",
+        "copy",
+        "duplicateTab",
+        "expandSelectionToWord",
+        "exportBuffer",
+        "find",
+        "findMatch",
+        "focusPane",
+        "globalSummon",
+        "identifyWindow",
+        "identifyWindows",
+        "moveFocus",
+        "movePane",
+        "swapPane",
+        "markMode",
+        "moveTab",
+        "multipleActions",
+        "newTab",
+        "newWindow",
+        "nextTab",
+        "openNewTabDropdown",
+        "openSettings",
+        "openTabColorPicker",
+        "openWindowRenamer",
+        "paste",
+        "prevTab",
+        "renameTab",
+        "openSystemMenu",
+        "openTabRenamer",
+        "quakeMode",
+        "resetFontSize",
+        "resizePane",
+        "renameWindow",
+        "scrollDown",
+        "scrollDownPage",
+        "scrollUp",
+        "scrollUpPage",
+        "scrollToBottom",
+        "scrollToTop",
+        "sendInput",
+        "setColorScheme",
+        "setTabColor",
+        "splitPane",
+        "switchToTab",
+        "tabSearch",
+        "toggleAlwaysOnTop",
+        "toggleBlockSelection",
+        "toggleFocusMode",
+        "selectAll",
+        "setFocusMode",
+        "switchSelectionEndpoint",
+        "toggleFullscreen",
+        "setFullScreen",
+        "setMaximized",
+        "togglePaneZoom",
+        "toggleSplitOrientation",
+        "toggleReadOnlyMode",
+        "toggleShaderEffects",
+        "wt",
+        "quit",
+        "adjustOpacity",
+        "restoreLastClosed",
+        "addMark",
+        "scrollToMark",
+        "clearMark",
+        "clearAllMarks",
+        "experimental.colorSelection",
+        "unbound"
+      ],
+      "type": "string"
+    },
+    "FocusDirection": {
+      "enum": [
+        "left",
+        "right",
+        "up",
+        "down",
+        "previous",
+        "nextInOrder",
+        "previousInOrder",
+        "first",
+        "parent",
+        "child"
+      ],
+      "type": "string"
+    },
+    "ScrollToMarkDirection": {
+      "enum": [
+        "previous",
+        "next",
+        "first",
+        "last"
+      ],
+      "type": "string"
+    },
+    "ResizeDirection": {
+      "enum": [
+        "left",
+        "right",
+        "up",
+        "down"
+      ],
+      "type": "string"
+    },
+    "MoveTabDirection": {
+      "enum": [
+        "forward",
+        "backward"
+      ],
+      "type": "string"
+    },
+    "FindMatchDirection": {
+      "enum": [
+        "next",
+        "prev"
+      ],
+      "type": "string"
+    },
+    "SplitDirection": {
+      "enum": [
+        "auto",
+        "up",
+        "right",
+        "down",
+        "left"
+      ],
+      "type": "string"
+    },
+    "CopyFormat": {
+      "oneOf": [
+        {
+          "type": "boolean"
+        },
+        {
+          "type": "array",
+          "items": {
+            "type": "string",
+            "enum": [
+              "html",
+              "rtf"
+            ]
+          }
+        },
+        {
+          "type": "string",
+          "enum": [
+            "html",
+            "rtf",
+            "all",
+            "none"
+          ]
+        }
+      ]
+    },
+    "AnchorKey": {
+      "enum": [
+        "ctrl",
+        "alt",
+        "shift"
+      ],
+      "type": "string"
+    },
+    "CommandPaletteLaunchMode": {
+      "enum": [
+        "action",
+        "commandLine"
+      ],
+      "type": "string"
+    },
+    "ClearBufferType": {
+      "enum": [
+        "all",
+        "screen",
+        "scrollback"
+      ],
+      "type": "string"
+    },
+    "NewTerminalArgs": {
+      "properties": {
+        "commandline": {
+          "type": "string"
+        },
+        "tabTitle": {
+          "type": "string"
+        },
+        "startingDirectory": {
+          "type": "string"
+        },
+        "profile": {
+          "type": "string"
+        },
+        "index": {
+          "type": "integer"
+        },
+        "tabColor": {
+          "$ref": "#/$defs/Color"
+        },
+        "suppressApplicationTitle": {
+          "type": "boolean"
+        },
+        "colorScheme": {
+          "type": "string"
+        },
+        "elevate": {
+          "type": "boolean"
+        }
+      },
+      "type": "object"
+    },
+    "NewTabMenuEntryType": {
+      "enum": [
+        "source",
+        "profile",
+        "folder",
+        "separator",
+        "remainingProfiles",
+        "matchProfiles"
+      ]
+    },
+    "NewTabMenuEntry": {
+      "properties": {
+        "type": {
+          "$ref": "#/$defs/NewTabMenuEntryType"
+        }
+      },
+      "required": [
+        "type"
+      ],
+      "type": "object"
+    },
+    "FolderEntryInlining": {
+      "enum": [
+        "never",
+        "auto"
+      ]
+    },
+    "FolderEntry": {
+      "allOf": [
+        {
+          "$ref": "#/$defs/NewTabMenuEntry"
+        },
+        {
+          "properties": {
+            "type": {
+              "type": "string",
+              "const": "folder"
+            },
+            "name": {
+              "type": "string"
+            },
+            "icon": {
+              "$ref": "#/$defs/Icon"
+            },
+            "entries": {
+              "type": "array",
+              "minItems": 1,
+              "items": {
+                "$ref": "#/$defs/NewTabMenuEntry"
+              }
+            },
+            "inline": {
+              "$ref": "#/$defs/FolderEntryInlining"
+            },
+            "allowEmpty": {
+              "type": "boolean"
+            }
+          }
+        }
+      ]
+    },
+    "SeparatorEntry": {
+      "allOf": [
+        {
+          "$ref": "#/$defs/NewTabMenuEntry"
+        },
+        {
+          "properties": {
+            "type": {
+              "type": "string",
+              "const": "separator"
+            }
+          }
+        }
+      ]
+    },
+    "ProfileEntry": {
+      "allOf": [
+        {
+          "$ref": "#/$defs/NewTabMenuEntry"
+        },
+        {
+          "properties": {
+            "type": {
+              "type": "string",
+              "const": "profile"
+            },
+            "profile": {
+              "type": "string"
+            }
+          }
+        }
+      ]
+    },
+    "RemainingProfilesEntry": {
+      "allOf": [
+        {
+          "$ref": "#/$defs/NewTabMenuEntry"
+        },
+        {
+          "properties": {
+            "type": {
+              "type": "string",
+              "const": "remainingProfiles"
+            }
+          }
+        }
+      ]
+    },
+    "MatchProfilesEntry": {
+      "allOf": [
+        {
+          "$ref": "#/$defs/NewTabMenuEntry"
+        },
+        {
+          "properties": {
+            "type": {
+              "type": "string",
+              "const": "matchProfiles"
+            },
+            "name": {
+              "type": "string"
+            },
+            "source": {
+              "type": "string"
+            },
+            "commandline": {
+              "type": "string"
+            }
+          }
+        }
+      ]
+    },
+    "SwitchToAdjacentTabArgs": {
+      "oneOf": [
+        {
+          "type": "null"
+        },
+        {
+          "enum": [
+            "mru",
+            "inOrder",
+            "disabled"
+          ],
+          "type": "string"
+        }
+      ]
+    },
+    "ShortcutAction": {
+      "properties": {
+        "action": {
+          "$ref": "#/$defs/ShortcutActionName"
+        }
+      },
+      "required": [
+        "action"
+      ],
+      "type": "object"
+    },
+    "AdjustFontSizeAction": {
+      "allOf": [
+        {
+          "$ref": "#/$defs/ShortcutAction"
+        },
+        {
+          "properties": {
+            "action": {
+              "type": "string",
+              "const": "adjustFontSize"
+            },
+            "delta": {
+              "type": "integer"
+            }
+          }
+        }
+      ],
+      "required": [
+        "delta"
+      ]
+    },
+    "CopyAction": {
+      "allOf": [
+        {
+          "$ref": "#/$defs/ShortcutAction"
+        },
+        {
+          "properties": {
+            "action": {
+              "type": "string",
+              "const": "copy"
+            },
+            "singleLine": {
+              "type": "boolean"
+            },
+            "copyFormatting": {
+              "oneOf": [
+                {
+                  "$ref": "#/$defs/CopyFormat"
+                },
+                {
+                  "type": "null"
+                }
+              ]
+            }
+          }
+        }
+      ]
+    },
+    "NewTabAction": {
+      "allOf": [
+        {
+          "$ref": "#/$defs/ShortcutAction"
+        },
+        {
+          "$ref": "#/$defs/NewTerminalArgs"
+        },
+        {
+          "properties": {
+            "action": {
+              "type": "string",
+              "const": "newTab"
+            }
+          }
+        }
+      ]
+    },
+    "SwitchToTabAction": {
+      "allOf": [
+        {
+          "$ref": "#/$defs/ShortcutAction"
+        },
+        {
+          "properties": {
+            "action": {
+              "type": "string",
+              "const": "switchToTab"
+            },
+            "index": {
+              "type": "integer"
+            }
+          }
+        }
+      ],
+      "required": [
+        "index"
+      ]
+    },
+    "MovePaneAction": {
+      "allOf": [
+        {
+          "$ref": "#/$defs/ShortcutAction"
+        },
+        {
+          "properties": {
+            "action": {
+              "type": "string",
+              "const": "movePane"
+            },
+            "index": {
+              "type": "integer"
+            }
+          }
+        }
+      ],
+      "required": [
+        "index"
+      ]
+    },
+    "MoveFocusAction": {
+      "allOf": [
+        {
+          "$ref": "#/$defs/ShortcutAction"
+        },
+        {
+          "properties": {
+            "action": {
+              "type": "string",
+              "const": "moveFocus"
+            },
+            "direction": {
+              "$ref": "#/$defs/FocusDirection"
+            }
+          }
+        }
+      ],
+      "required": [
+        "direction"
+      ]
+    },
+    "SwapPaneAction": {
+      "allOf": [
+        {
+          "$ref": "#/$defs/ShortcutAction"
+        },
+        {
+          "properties": {
+            "action": {
+              "type": "string",
+              "const": "swapPane"
+            },
+            "direction": {
+              "$ref": "#/$defs/FocusDirection"
+            }
+          }
+        }
+      ],
+      "required": [
+        "direction"
+      ]
+    },
+    "ResizePaneAction": {
+      "allOf": [
+        {
+          "$ref": "#/$defs/ShortcutAction"
+        },
+        {
+          "properties": {
+            "action": {
+              "type": "string",
+              "const": "resizePane"
+            },
+            "direction": {
+              "$ref": "#/$defs/ResizeDirection"
+            }
+          }
+        }
+      ],
+      "required": [
+        "direction"
+      ]
+    },
+    "ScrollToMarkAction": {
+      "allOf": [
+        {
+          "$ref": "#/$defs/ShortcutAction"
+        },
+        {
+          "properties": {
+            "action": {
+              "type": "string",
+              "const": "scrollToMark"
+            },
+            "direction": {
+              "$ref": "#/$defs/ScrollToMarkDirection"
+            }
+          }
+        }
+      ],
+      "required": [
+        "direction"
+      ]
+    },
+    "SendInputAction": {
+      "allOf": [
+        {
+          "$ref": "#/$defs/ShortcutAction"
+        },
+        {
+          "properties": {
+            "action": {
+              "type": "string",
+              "const": "sendInput"
+            },
+            "input": {
+              "type": "string"
+            }
+          }
+        }
+      ],
+      "required": [
+        "input"
+      ]
+    },
+    "SplitPaneAction": {
+      "allOf": [
+        {
+          "$ref": "#/$defs/ShortcutAction"
+        },
+        {
+          "$ref": "#/$defs/NewTerminalArgs"
+        },
+        {
+          "properties": {
+            "action": {
+              "type": "string",
+              "const": "splitPane"
+            },
+            "split": {
+              "$ref": "#/$defs/SplitDirection"
+            },
+            "splitMode": {
+            },
+            "size": {
+              "maximum": 1,
+              "minimum": 0,
+              "type": "number"
+            }
+          }
+        }
+      ]
+    },
+    "ColorSelectionAction": {
+      "allOf": [
+        {
+          "$ref": "#/$defs/ShortcutAction"
+        },
+        {
+          "properties": {
+            "action": {
+              "type": "string",
+              "const": "experimental.colorSelection"
+            },
+            "matchMode": {
+              "type": "string",
+              "enum": [
+                "none",
+                "all"
+              ]
+            },
+            "foreground": {
+              "$ref": "#/$defs/ColorOrIndex",
+              "type": "string"
+            },
+            "background": {
+              "$ref": "#/$defs/ColorOrIndex",
+              "type": "string"
+            }
+          }
+        }
+      ]
+    },
+    "OpenSettingsAction": {
+      "allOf": [
+        {
+          "$ref": "#/$defs/ShortcutAction"
+        },
+        {
+          "properties": {
+            "action": {
+              "type": "string",
+              "const": "openSettings"
+            },
+            "target": {
+              "type": "string",
+              "enum": [
+                "settingsFile",
+                "defaultsFile",
+                "allFiles",
+                "settingsUI"
+              ]
+            }
+          }
+        }
+      ]
+    },
+    "SetTabColorAction": {
+      "allOf": [
+        {
+          "$ref": "#/$defs/ShortcutAction"
+        },
+        {
+          "properties": {
+            "action": {
+              "type": "string",
+              "const": "setTabColor"
+            },
+            "color": {
+              "$ref": "#/$defs/Color"
+            }
+          }
+        }
+      ]
+    },
+    "AddMarkAction": {
+      "allOf": [
+        {
+          "$ref": "#/$defs/ShortcutAction"
+        },
+        {
+          "properties": {
+            "action": {
+              "type": "string",
+              "const": "addMark"
+            },
+            "color": {
+              "$ref": "#/$defs/Color"
+            }
+          }
+        }
+      ]
+    },
+    "SetColorSchemeAction": {
+      "allOf": [
+        {
+          "$ref": "#/$defs/ShortcutAction"
+        },
+        {
+          "properties": {
+            "action": {
+              "type": "string",
+              "const": "setColorScheme"
+            },
+            "colorScheme": {
+              "type": "string"
+            }
+          }
+        }
+      ],
+      "required": [
+        "colorScheme"
+      ]
+    },
+    "SetFocusModeAction": {
+      "allOf": [
+        {
+          "$ref": "#/$defs/ShortcutAction"
+        },
+        {
+          "properties": {
+            "action": {
+              "type": "string",
+              "const": "setFocusMode"
+            },
+            "isFocusMode": {
+              "type": "boolean"
+            }
+          }
+        }
+      ]
+    },
+    "SetFullScreenAction": {
+      "allOf": [
+        {
+          "$ref": "#/$defs/ShortcutAction"
+        },
+        {
+          "properties": {
+            "action": {
+              "type": "string",
+              "const": "setFullScreen"
+            },
+            "isFullScreen": {
+              "type": "boolean"
+            }
+          }
+        }
+      ]
+    },
+    "SetMaximizedAction": {
+      "allOf": [
+        {
+          "$ref": "#/$defs/ShortcutAction"
+        },
+        {
+          "properties": {
+            "action": {
+              "type": "string",
+              "const": "setMaximized"
+            },
+            "isMaximized": {
+              "type": "boolean"
+            }
+          }
+        }
+      ]
+    },
+    "WtAction": {
+      "allOf": [
+        {
+          "$ref": "#/$defs/ShortcutAction"
+        },
+        {
+          "properties": {
+            "action": {
+              "type": "string",
+              "const": "wt"
+            },
+            "commandline": {
+              "type": "string"
+            }
+          }
+        }
+      ],
+      "required": [
+        "commandline"
+      ]
+    },
+    "CloseOtherTabsAction": {
+      "allOf": [
+        {
+          "$ref": "#/$defs/ShortcutAction"
+        },
+        {
+          "properties": {
+            "action": {
+              "type": "string",
+              "const": "closeOtherTabs"
+            },
+            "index": {
+              "oneOf": [
+                {
+                  "type": "integer"
+                },
+                {
+                  "type": "null"
+                }
+              ]
+            }
+          }
+        }
+      ]
+    },
+    "CloseTabsAfterAction": {
+      "allOf": [
+        {
+          "$ref": "#/$defs/ShortcutAction"
+        },
+        {
+          "properties": {
+            "action": {
+              "type": "string",
+              "const": "closeTabsAfter"
+            },
+            "index": {
+              "oneOf": [
+                {
+                  "type": "integer"
+                },
+                {
+                  "type": "null"
+                }
+              ]
+            }
+          }
+        }
+      ]
+    },
+    "CloseTabAction": {
+      "allOf": [
+        {
+          "$ref": "#/$defs/ShortcutAction"
+        },
+        {
+          "properties": {
+            "action": {
+              "type": "string",
+              "const": "closeTab"
+            },
+            "index": {
+              "oneOf": [
+                {
+                  "type": "integer"
+                },
+                {
+                  "type": "null"
+                }
+              ]
+            }
+          }
+        }
+      ]
+    },
+    "ScrollUpAction": {
+      "allOf": [
+        {
+          "$ref": "#/$defs/ShortcutAction"
+        },
+        {
+          "properties": {
+            "action": {
+              "type": "string",
+              "const": "scrollUp"
+            },
+            "rowsToScroll": {
+              "type": [
+                "integer",
+                "null"
+              ]
+            }
+          }
+        }
+      ]
+    },
+    "ScrollDownAction": {
+      "allOf": [
+        {
+          "$ref": "#/$defs/ShortcutAction"
+        },
+        {
+          "properties": {
+            "action": {
+              "type": "string",
+              "const": "scrollDown"
+            },
+            "rowsToScroll": {
+              "type": [
+                "integer",
+                "null"
+              ]
+            }
+          }
+        }
+      ]
+    },
+    "MoveTabAction": {
+      "allOf": [
+        {
+          "$ref": "#/$defs/ShortcutAction"
+        },
+        {
+          "properties": {
+            "action": {
+              "type": "string",
+              "const": "moveTab"
+            },
+            "direction": {
+              "$ref": "#/$defs/MoveTabDirection"
+            }
+          }
+        }
+      ],
+      "required": [
+        "direction"
+      ]
+    },
+    "MultipleActionsAction": {
+      "allOf": [
+        {
+          "$ref": "#/$defs/ShortcutAction"
+        },
+        {
+          "properties": {
+            "action": {
+              "type": "string",
+              "const": "multipleActions"
+            },
+            "actions": {
+              "$ref": "#/$defs/ShortcutAction",
+              "type": "array",
+              "minItems": 1
+            }
+          }
+        }
+      ],
+      "required": [
+        "actions"
+      ]
+    },
+    "CommandPaletteAction": {
+      "allOf": [
+        {
+          "$ref": "#/$defs/ShortcutAction"
+        },
+        {
+          "properties": {
+            "action": {
+              "type": "string",
+              "const": "commandPalette"
+            },
+            "launchMode": {
+              "$ref": "#/$defs/CommandPaletteLaunchMode"
+            }
+          }
+        }
+      ]
+    },
+    "FindMatchAction": {
+      "allOf": [
+        {
+          "$ref": "#/$defs/ShortcutAction"
+        },
+        {
+          "properties": {
+            "action": {
+              "type": "string",
+              "const": "findMatch"
+            },
+            "direction": {
+              "$ref": "#/$defs/FindMatchDirection"
+            }
+          }
+        }
+      ],
+      "required": [
+        "direction"
+      ]
+    },
+    "NewWindowAction": {
+      "allOf": [
+        {
+          "$ref": "#/$defs/ShortcutAction"
+        },
+        {
+          "$ref": "#/$defs/NewTerminalArgs"
+        },
+        {
+          "properties": {
+            "action": {
+              "type": "string",
+              "const": "newWindow"
+            }
+          }
+        }
+      ]
+    },
+    "PrevTabAction": {
+      "allOf": [
+        {
+          "$ref": "#/$defs/ShortcutAction"
+        },
+        {
+          "properties": {
+            "action": {
+              "type": "string",
+              "const": "prevTab"
+            },
+            "tabSwitcherMode": {
+              "$ref": "#/$defs/SwitchToAdjacentTabArgs"
+            }
+          }
+        }
+      ]
+    },
+    "NextTabAction": {
+      "allOf": [
+        {
+          "$ref": "#/$defs/ShortcutAction"
+        },
+        {
+          "properties": {
+            "action": {
+              "type": "string",
+              "const": "nextTab"
+            },
+            "tabSwitcherMode": {
+              "$ref": "#/$defs/SwitchToAdjacentTabArgs"
+            }
+          }
+        }
+      ]
+    },
+    "RenameTabAction": {
+      "allOf": [
+        {
+          "$ref": "#/$defs/ShortcutAction"
+        },
+        {
+          "properties": {
+            "action": {
+              "type": "string",
+              "const": "renameTab"
+            },
+            "title": {
+              "type": "string"
+            }
+          }
+        }
+      ]
+    },
+    "RenameWindowAction": {
+      "allOf": [
+        {
+          "$ref": "#/$defs/ShortcutAction"
+        },
+        {
+          "properties": {
+            "action": {
+              "type": "string",
+              "const": "renameWindow"
+            },
+            "name": {
+              "type": "string"
+            }
+          }
+        }
+      ]
+    },
+    "FocusPaneAction": {
+      "allOf": [
+        {
+          "$ref": "#/$defs/ShortcutAction"
+        },
+        {
+          "properties": {
+            "action": {
+              "type": "string",
+              "const": "focusPane"
+            },
+            "id": {
+              "type": "integer",
+              "minimum": 0
+            }
+          }
+        }
+      ]
+    },
+    "ClearBufferAction": {
+      "allOf": [
+        {
+          "$ref": "#/$defs/ShortcutAction"
+        },
+        {
+          "properties": {
+            "action": {
+              "type": "string",
+              "const": "clearBuffer"
+            },
+            "clear": {
+              "$ref": "#/$defs/ClearBufferType"
+            }
+          }
+        }
+      ]
+    },
+    "ExportBufferAction": {
+      "allOf": [
+        {
+          "$ref": "#/$defs/ShortcutAction"
+        },
+        {
+          "properties": {
+            "action": {
+              "type": "string",
+              "const": "exportBuffer"
+            },
+            "path": {
+              "type": "string"
+            }
+          }
+        }
+      ]
+    },
+    "GlobalSummonAction": {
+      "allOf": [
+        {
+          "$ref": "#/$defs/ShortcutAction"
+        },
+        {
+          "properties": {
+            "action": {
+              "type": "string",
+              "const": "globalSummon"
+            },
+            "desktop": {
+              "type": "string",
+              "enum": [
+                "any",
+                "toCurrent",
+                "onCurrent"
+              ]
+            },
+            "monitor": {
+              "type": "string",
+              "enum": [
+                "any",
+                "toCurrent",
+                "toMouse"
+              ]
+            },
+            "name": {
+              "type": "string"
+            },
+            "dropdownDuration": {
+              "type": "integer",
+              "minimum": 0
+            },
+            "toggleVisibility": {
+              "type": "boolean"
+            }
+          }
+        }
+      ]
+    },
+    "QuakeModeAction": {
+      "allOf": [
+        {
+          "$ref": "#/$defs/ShortcutAction"
+        },
+        {
+          "properties": {
+            "action": {
+              "type": "string",
+              "const": "quakeMode"
+            }
+          }
+        }
+      ]
+    },
+    "AdjustOpacityAction": {
+      "allOf": [
+        {
+          "$ref": "#/$defs/ShortcutAction"
+        },
+        {
+          "properties": {
+            "action": {
+              "type": "string",
+              "const": "adjustOpacity"
+            },
+            "opacity": {
+              "type": "integer",
+              "minimum": -100,
+              "maximum": 100
+            },
+            "relative": {
+              "type": "boolean"
+            }
+          }
+        }
+      ]
+    },
+    "ShowCloseButton": {
+      "enum": [
+        "always",
+        "hover",
+        "never"
+      ],
+      "type": "string"
+    },
+    "ThemeColor": {
+      "oneOf": [
+        {
+          "type": "string"
+        },
+        {
+          "const": "accent",
+          "type": "string"
+        },
+        {
+          "const": "terminalBackground",
+          "type": "string"
+        },
+        {
+          "type": "null"
+        }
+      ]
+    },
+    "TabTheme": {
+      "additionalProperties": false,
+      "properties": {
+        "background": {
+          "$ref": "#/$defs/ThemeColor"
+        },
+        "unfocusedBackground": {
+          "$ref": "#/$defs/ThemeColor"
+        },
+        "showCloseButton": {
+          "$ref": "#/$defs/ShowCloseButton"
+        }
+      }
+    },
+    "TabRowTheme": {
+      "additionalProperties": false,
+      "properties": {
+        "background": {
+          "$ref": "#/$defs/ThemeColor"
+        },
+        "unfocusedBackground": {
+          "$ref": "#/$defs/ThemeColor"
+        }
+      }
+    },
+    "WindowTheme": {
+      "additionalProperties": false,
+      "properties": {
+        "applicationTheme": {
+          "enum": [
+            "light",
+            "dark",
+            "system"
+          ],
+          "type": "string"
+        },
+        "useMica": {
+          "type": "boolean"
+        }
+      }
+    },
+    "Theme": {
+      "additionalProperties": false,
+      "properties": {
+        "name": {
+          "type": "string",
+          "not": {
+            "enum": [
+              "light",
+              "dark",
+              "system"
+            ]
+          }
+        },
+        "tab": {
+          "$ref": "#/$defs/TabTheme"
+        },
+        "tabRow": {
+          "$ref": "#/$defs/TabRowTheme"
+        },
+        "window": {
+          "$ref": "#/$defs/WindowTheme"
+        }
+      }
+    },
+    "ThemePair": {
+      "additionalProperties": false,
+      "properties": {
+        "light": {
+          "type": "string"
+        },
+        "dark": {
+          "type": "string"
+        }
+      }
+    },
+    "NewTabMenu": {
+      "type": "array",
+      "items": {
+        "oneOf": [
+          {
+            "$ref": "#/$defs/FolderEntry"
+          },
+          {
+            "$ref": "#/$defs/SeparatorEntry"
+          },
+          {
+            "$ref": "#/$defs/ProfileEntry"
+          },
+          {
+            "$ref": "#/$defs/MatchProfilesEntry"
+          },
+          {
+            "$ref": "#/$defs/RemainingProfilesEntry"
+          }
+        ]
+      }
+    },
+    "Keybinding": {
+      "additionalProperties": false,
+      "properties": {
+        "command": {
+          "oneOf": [
+            {
+              "$ref": "#/$defs/AdjustFontSizeAction"
+            },
+            {
+              "$ref": "#/$defs/CopyAction"
+            },
+            {
+              "$ref": "#/$defs/ShortcutActionName"
+            },
+            {
+              "$ref": "#/$defs/NewTabAction"
+            },
+            {
+              "$ref": "#/$defs/SwitchToTabAction"
+            },
+            {
+              "$ref": "#/$defs/MoveFocusAction"
+            },
+            {
+              "$ref": "#/$defs/MovePaneAction"
+            },
+            {
+              "$ref": "#/$defs/SwapPaneAction"
+            },
+            {
+              "$ref": "#/$defs/ResizePaneAction"
+            },
+            {
+              "$ref": "#/$defs/SendInputAction"
+            },
+            {
+              "$ref": "#/$defs/SplitPaneAction"
+            },
+            {
+              "$ref": "#/$defs/OpenSettingsAction"
+            },
+            {
+              "$ref": "#/$defs/SetTabColorAction"
+            },
+            {
+              "$ref": "#/$defs/SetColorSchemeAction"
+            },
+            {
+              "$ref": "#/$defs/WtAction"
+            },
+            {
+              "$ref": "#/$defs/CloseOtherTabsAction"
+            },
+            {
+              "$ref": "#/$defs/CloseTabsAfterAction"
+            },
+            {
+              "$ref": "#/$defs/CloseTabAction"
+            },
+            {
+              "$ref": "#/$defs/ScrollUpAction"
+            },
+            {
+              "$ref": "#/$defs/ScrollDownAction"
+            },
+            {
+              "$ref": "#/$defs/MoveTabAction"
+            },
+            {
+              "$ref": "#/$defs/MultipleActionsAction"
+            },
+            {
+              "$ref": "#/$defs/CommandPaletteAction"
+            },
+            {
+              "$ref": "#/$defs/FindMatchAction"
+            },
+            {
+              "$ref": "#/$defs/NewWindowAction"
+            },
+            {
+              "$ref": "#/$defs/NextTabAction"
+            },
+            {
+              "$ref": "#/$defs/PrevTabAction"
+            },
+            {
+              "$ref": "#/$defs/RenameTabAction"
+            },
+            {
+              "$ref": "#/$defs/RenameWindowAction"
+            },
+            {
+              "$ref": "#/$defs/FocusPaneAction"
+            },
+            {
+              "$ref": "#/$defs/ExportBufferAction"
+            },
+            {
+              "$ref": "#/$defs/ClearBufferAction"
+            },
+            {
+              "$ref": "#/$defs/GlobalSummonAction"
+            },
+            {
+              "$ref": "#/$defs/QuakeModeAction"
+            },
+            {
+              "$ref": "#/$defs/AdjustOpacityAction"
+            },
+            {
+              "$ref": "#/$defs/ColorSelectionAction"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "keys": {
+          "oneOf": [
+            {
+              "$ref": "#/$defs/KeyChordSegment"
+            },
+            {
+              "items": {
+                "$ref": "#/$defs/KeyChordSegment"
+              },
+              "minItems": 1,
+              "type": "array"
+            }
+          ]
+        },
+        "icon": {
+          "$ref": "#/$defs/Icon"
+        },
+        "name": {
+          "properties": {
+            "key": {
+              "type": "string"
+            }
+          },
+          "type": [
+            "string",
+            "object",
+            "null"
+          ]
+        },
+        "iterateOn": {
+          "type": "string",
+          "enum": [
+            "profiles",
+            "schemes"
+          ]
+        },
+        "commands": {
+          "items": {
+            "$ref": "#/$defs/Keybinding/properties/command"
+          },
+          "minItems": 1,
+          "type": "array"
+        }
+      },
+      "anyOf": [
+        {
+          "required": [
+            "name",
+            "commands"
+          ]
+        },
+        {
+          "required": [
+            "command"
+          ]
+        }
+      ],
+      "type": "object"
+    },
+    "Globals": {
+      "additionalProperties": true,
+      "properties": {
+        "alwaysOnTop": {
+          "type": "boolean"
+        },
+        "alwaysShowTabs": {
+          "type": "boolean"
+        },
+        "centerOnLaunch": {
+          "type": "boolean"
+        },
+        "inputServiceWarning": {
+          "type": "boolean"
+        },
+        "copyOnSelect": {
+          "type": "boolean"
+        },
+        "focusFollowMouse": {
+          "type": "boolean"
+        },
+        "copyFormatting": {
+          "$ref": "#/$defs/CopyFormat"
+        },
+        "trimBlockSelection": {
+          "type": "boolean"
+        },
+        "trimPaste": {
+          "type": "boolean"
+        },
+        "experimental.detectURLs": {
+          "type": "boolean"
+        },
+        "experimental.enableColorSelection": {
+          "type": "boolean"
+        },
+        "disableAnimations": {
+          "type": "boolean"
+        },
+        "largePasteWarning": {
+          "type": "boolean"
+        },
+        "multiLinePasteWarning": {
+          "type": "boolean"
+        },
+        "defaultProfile": {
+          "type": "string"
+        },
+        "startupActions": {
+          "type": "string"
+        },
+        "disabledProfileSources": {
+          "items": {
+            "$ref": "#/$defs/DynamicProfileSource"
+          },
+          "type": "array"
+        },
+        "experimental.rendering.forceFullRepaint": {
+          "type": "boolean"
+        },
+        "experimental.rendering.software": {
+          "type": "boolean"
+        },
+        "experimental.input.forceVT": {
+          "type": "boolean"
+        },
+        "experimental.useBackgroundImageForWindow": {
+          "type": "boolean"
+        },
+        "initialCols": {
+          "maximum": 999,
+          "minimum": 1,
+          "type": "integer"
+        },
+        "initialPosition": {
+          "$ref": "#/$defs/Coordinates"
+        },
+        "initialRows": {
+          "maximum": 999,
+          "minimum": 1,
+          "type": "integer"
+        },
+        "startOnUserLogin": {
+          "type": "boolean"
+        },
+        "firstWindowPreference": {
+          "enum": [
+            "defaultProfile",
+            "persistedWindowLayout"
+          ],
+          "type": "string"
+        },
+        "launchMode": {
+          "enum": [
+            "fullscreen",
+            "maximized",
+            "focus",
+            "maximizedFocus"
+          ],
+          "type": "string"
+        },
+        "rowsToScroll": {
+          "maximum": 999,
+          "minimum": 0,
+          "type": [
+            "integer",
+            "string"
+          ],
+          "deprecated": true
+        },
+        "minimizeToNotificationArea": {
+          "type": "boolean"
+        },
+        "alwaysShowNotificationIcon": {
+          "type": "boolean"
+        },
+        "showAdminShield": {
+          "type": "boolean"
+        },
+        "useAcrylicInTabRow": {
+          "type": "boolean"
+        },
+        "actions": {
+          "items": {
+            "$ref": "#/$defs/Keybinding"
+          },
+          "type": "array"
+        },
+        "keybindings": {
+          "deprecated": true,
+          "items": {
+            "$ref": "#/$defs/Keybinding"
+          },
+          "type": "array"
+        },
+        "newTabMenu": {
+          "$ref": "#/$defs/NewTabMenu"
+        },
+        "language": {
+          "type": "string"
+        },
+        "theme": {
+          "oneOf": [
+            {
+              "type": "string"
+            },
+            {
+              "$ref": "#/$defs/ThemePair"
+            }
+          ]
+        },
+        "themes": {
+          "items": {
+            "$ref": "#/$defs/Theme"
+          },
+          "type": "array"
+        },
+        "showTabsInTitlebar": {
+          "type": "boolean"
+        },
+        "showTerminalTitleInTitlebar": {
+          "type": "boolean"
+        },
+        "snapToGridOnResize": {
+          "type": "boolean"
+        },
+        "tabWidthMode": {
+          "enum": [
+            "compact",
+            "equal",
+            "titleLength"
+          ],
+          "type": "string"
+        },
+        "wordDelimiters": {
+          "type": "string"
+        },
+        "confirmCloseAllTabs": {
+          "type": "boolean"
+        },
+        "useTabSwitcher": {
+          "oneOf": [
+            {
+              "type": "boolean"
+            },
+            {
+              "enum": [
+                "mru",
+                "inOrder",
+                "disabled"
+              ],
+              "type": "string"
+            }
+          ],
+          "deprecated": true
+        },
+        "tabSwitcherMode": {
+          "oneOf": [
+            {
+              "type": "boolean"
+            },
+            {
+              "enum": [
+                "mru",
+                "inOrder",
+                "disabled"
+              ],
+              "type": "string"
+            }
+          ]
+        },
+        "windowingBehavior": {
+          "enum": [
+            "useNew",
+            "useExisting",
+            "useAnyExisting"
+          ],
+          "type": "string"
+        },
+        "newTabPosition": {
+          "enum": [
+            "afterLastTab",
+            "afterCurrentTab"
+          ],
+          "type": "string"
+        },
+        "autoHideWindow": {
+          "type": "boolean"
+        }
+      },
+      "required": [
+        "defaultProfile"
+      ],
+      "type": "object"
+    },
+    "Profile": {
+      "additionalProperties": false,
+      "properties": {
+        "acrylicOpacity": {
+          "deprecated": true,
+          "maximum": 1,
+          "minimum": 0,
+          "type": "number"
+        },
+        "antialiasingMode": {
+          "enum": [
+            "grayscale",
+            "cleartype",
+            "aliased"
+          ],
+          "type": "string"
+        },
+        "background": {
+          "$ref": "#/$defs/Color",
+          "type": [
+            "string",
+            "null"
+          ]
+        },
+        "unfocusedAppearance": {
+          "$ref": "#/$defs/AppearanceConfig",
+          "type": [
+            "object",
+            "null"
+          ]
+        },
+        "font": {
+          "$ref": "#/$defs/FontConfig",
+          "type": [
+            "object",
+            "null"
+          ]
+        },
+        "backgroundImage": {
+          "oneOf": [
+            {
+              "type": [
+                "string",
+                "null"
+              ]
+            },
+            {
+              "enum": [
+                "desktopWallpaper"
+              ]
+            }
+          ],
+          "type": [
+            "string",
+            "null"
+          ]
+        },
+        "backgroundImageAlignment": {
+          "enum": [
+            "bottom",
+            "bottomLeft",
+            "bottomRight",
+            "center",
+            "left",
+            "right",
+            "top",
+            "topLeft",
+            "topRight"
+          ],
+          "type": "string"
+        },
+        "backgroundImageOpacity": {
+          "maximum": 1.0,
+          "minimum": 0.0,
+          "type": "number"
+        },
+        "backgroundImageStretchMode": {
+          "enum": [
+            "fill",
+            "none",
+            "uniform",
+            "uniformToFill"
+          ],
+          "type": "string"
+        },
+        "bellStyle": {
+          "$ref": "#/$defs/BellStyle"
+        },
+        "bellSound": {
+          "$ref": "#/$defs/BellSound"
+        },
+        "closeOnExit": {
+          "oneOf": [
+            {
+              "enum": [
+                "never",
+                "graceful",
+                "always",
+                "automatic"
+              ],
+              "type": "string"
+            },
+            {
+              "type": "boolean"
+            }
+          ]
+        },
+        "colorScheme": {
+          "oneOf": [
+            {
+              "$ref": "#/$defs/SchemePair"
+            },
+            {
+              "type": "string"
+            }
+          ]
+        },
+        "commandline": {
+          "type": "string"
+        },
+        "cursorColor": {
+          "oneOf": [
+            {
+              "$ref": "#/$defs/Color"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "cursorHeight": {
+          "maximum": 100,
+          "minimum": 1,
+          "type": [
+            "integer",
+            "null"
+          ]
+        },
+        "cursorShape": {
+          "enum": [
+            "bar",
+            "doubleUnderscore",
+            "emptyBox",
+            "filledBox",
+            "underscore",
+            "vintage"
+          ],
+          "type": "string"
+        },
+        "elevate": {
+          "type": "boolean"
+        },
+        "experimental.autoMarkPrompts": {
+          "type": "boolean"
+        },
+        "experimental.connection.passthroughMode": {
+          "type": "boolean"
+        },
+        "experimental.retroTerminalEffect": {
+          "type": "boolean"
+        },
+        "experimental.showMarksOnScrollbar": {
+          "type": "boolean"
+        },
+        "experimental.pixelShaderPath": {
+          "type": "string"
+        },
+        "useAtlasEngine": {
+          "type": "boolean"
+        },
+        "fontFace": {
+          "type": "string",
+          "deprecated": true
+        },
+        "fontSize": {
+          "minimum": 1,
+          "type": "number",
+          "deprecated": true
+        },
+        "fontWeight": {
+          "oneOf": [
+            {
+              "enum": [
+                "thin",
+                "extra-light",
+                "light",
+                "semi-light",
+                "normal",
+                "medium",
+                "semi-bold",
+                "bold",
+                "extra-bold",
+                "black",
+                "extra-black"
+              ],
+              "type": "string"
+            },
+            {
+              "maximum": 990,
+              "minimum": 100,
+              "type": "integer"
+            }
+          ],
+          "deprecated": true
+        },
+        "intenseTextStyle": {
+          "enum": [
+            "none",
+            "bold",
+            "bright",
+            "all"
+          ],
+          "type": "string"
+        },
+        "foreground": {
+          "$ref": "#/$defs/Color",
+          "type": [
+            "string",
+            "null"
+          ]
+        },
+        "guid": {
+          "$ref": "#/$defs/ProfileGuid"
+        },
+        "hidden": {
+          "type": "boolean"
+        },
+        "historySize": {
+          "minimum": -1,
+          "type": "integer"
+        },
+        "icon": {
+          "$ref": "#/$defs/Icon"
+        },
+        "name": {
+          "minLength": 1,
+          "type": "string"
+        },
+        "opacity": {
+          "maximum": 100,
+          "minimum": 0,
+          "type": "number"
+        },
+        "padding": {
+          "oneOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "integer"
+            }
+          ]
+        },
+        "adjustIndistinguishableColors": {
+          "enum": [
+            "never",
+            "indexed",
+            "always"
+          ],
+          "type": "string"
+        },
+        "scrollbarState": {
+          "enum": [
+            "visible",
+            "hidden",
+            "always"
+          ],
+          "type": "string"
+        },
+        "selectionBackground": {
+          "oneOf": [
+            {
+              "$ref": "#/$defs/Color"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "snapOnInput": {
+          "type": "boolean"
+        },
+        "altGrAliasing": {
+          "type": "boolean"
+        },
+        "source": {
+          "type": [
+            "string",
+            "null"
+          ]
+        },
+        "startingDirectory": {
+          "type": [
+            "string",
+            "null"
+          ]
+        },
+        "suppressApplicationTitle": {
+          "type": "boolean"
+        },
+        "tabColor": {
+          "$ref": "#/$defs/Color",
+          "type": [
+            "string",
+            "null"
+          ]
+        },
+        "tabTitle": {
+          "type": [
+            "string",
+            "null"
+          ]
+        },
+        "useAcrylic": {
+          "type": "boolean"
+        }
+      },
+      "type": "object"
+    },
+    "ProfileList": {
+      "items": {
+        "$ref": "#/$defs/Profile",
+        "required": [
+          "guid",
+          "name"
+        ]
+      },
+      "type": "array"
+    },
+    "ProfilesObject": {
+      "properties": {
+        "list": {
+          "$ref": "#/$defs/ProfileList"
+        },
+        "defaults": {
+          "$ref": "#/$defs/Profile"
+        }
+      },
+      "type": "object"
+    },
+    "SchemeList": {
+      "items": {
+        "additionalProperties": false,
+        "properties": {
+          "name": {
+            "minLength": 1,
+            "type": "string"
+          },
+          "background": {
+            "$ref": "#/$defs/Color"
+          },
+          "black": {
+            "$ref": "#/$defs/Color"
+          },
+          "blue": {
+            "$ref": "#/$defs/Color"
+          },
+          "brightBlack": {
+            "$ref": "#/$defs/Color"
+          },
+          "brightBlue": {
+            "$ref": "#/$defs/Color"
+          },
+          "brightCyan": {
+            "$ref": "#/$defs/Color"
+          },
+          "brightGreen": {
+            "$ref": "#/$defs/Color"
+          },
+          "brightPurple": {
+            "$ref": "#/$defs/Color"
+          },
+          "brightRed": {
+            "$ref": "#/$defs/Color"
+          },
+          "brightWhite": {
+            "$ref": "#/$defs/Color"
+          },
+          "brightYellow": {
+            "$ref": "#/$defs/Color"
+          },
+          "cursorColor": {
+            "$ref": "#/$defs/Color"
+          },
+          "cyan": {
+            "$ref": "#/$defs/Color"
+          },
+          "foreground": {
+            "$ref": "#/$defs/Color"
+          },
+          "green": {
+            "$ref": "#/$defs/Color"
+          },
+          "purple": {
+            "$ref": "#/$defs/Color"
+          },
+          "red": {
+            "$ref": "#/$defs/Color"
+          },
+          "selectionBackground": {
+            "$ref": "#/$defs/Color"
+          },
+          "white": {
+            "$ref": "#/$defs/Color"
+          },
+          "yellow": {
+            "$ref": "#/$defs/Color"
+          }
+        },
+        "type": "object"
+      },
+      "type": "array"
+    }
+  },
+  "allOf": [
+    {
+      "$ref": "#/$defs/Globals"
+    },
+    {
+      "additionalItems": true,
+      "properties": {
+        "profiles": {
+          "oneOf": [
+            {
+              "$ref": "#/$defs/ProfileList"
+            },
+            {
+              "$ref": "#/$defs/ProfilesObject"
+            }
+          ]
+        },
+        "schemes": {
+          "$ref": "#/$defs/SchemeList"
+        }
+      },
+      "required": [
+        "profiles",
+        "schemes",
+        "defaultProfile"
+      ]
+    }
+  ]
+}

@@ -12,11 +12,11 @@ pub struct TerminalConfig {
     #[serde(rename = "copyOnSelect")]
     pub copy_on_select: bool,
     #[serde(rename = "defaultProfile")]
-    pub default_profile: String,
+    pub default_profile: String,//required
     #[serde(rename = "newTabMenu")]
     pub new_tab_menu: Vec<NewTabMenu>,
-    pub profiles: Profiles,
-    pub schemes: Vec<Scheme>,
+    pub profiles: Profiles,//required
+    pub schemes: Vec<Scheme>,//required
     pub theme: Option<String>,
     pub themes: Vec<Theme>,
 }
