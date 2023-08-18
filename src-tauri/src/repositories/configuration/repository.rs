@@ -1,5 +1,5 @@
 use async_trait::async_trait;
-use crate::repositories::configuration::dto::TerminalConfig;
+use crate::repositories::configuration::dto_rework::testdto::WindowsTerminalConfigurationClass as TerminalConfig;
 use crate::repositories::configuration::errors::RepositoryError;
 
 #[async_trait]

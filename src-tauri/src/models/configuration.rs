@@ -1,6 +1,10 @@
 use crate::repositories::{
     configuration::{
-        dto::Scheme,
+        //dto::Scheme,
+        dto_rework::testdto::SchemeList as Scheme,
+        dto_rework::testdto::Profiles as Profiles,
+        dto_rework::testdto::BackgroundImageStretchMode as BackgroundImageStretchMode,
+        dto_rework::testdto::BackgroundImageAlignment as BackgroundImageAlignment,
         repository::{JsonConfigurationRepository, TerminalConfigurationRepository},
     },
     gif::repository::{GifRepository, RESTGifRepository},
@@ -41,39 +45,46 @@ impl ConfigurationModelTrait for ConfigurationModel {
         let panda_path = self.gif_repository.get_gif_by_search(search_query).await?;
 
         let scheme = Scheme {
-            background: String::from("#3D1F16"),
-            black: String::from("#401F10"),
-            blue: String::from("#314573"),
-            bright_black: String::from("#6E6E6E"),
-            bright_blue: String::from("#5476B7"),
-            bright_cyan: String::from("#8CD2E6"),
-            bright_green: String::from("#9EC54F"),
-            bright_purple: String::from("#B674C2"),
-            bright_red: String::from("#C1443D"),
-            bright_white: String::from("#FFFFFF"),
-            bright_yellow: String::from("#DBA15C"),
-            cursor_color: String::from("#FFFFFF"),
-            cyan: String::from("#4F8A99"),
-            foreground: String::from("#FCE7D2"),
-            green: String::from("#516C57"),
-            name: String::from("RedPanda"),
-            purple: String::from("#82578E"),
-            red: String::from("#B13D14"),
-            selection_background: String::from("#4F8A99"),
-            white: String::from("#DBD3CE"),
-            yellow: String::from("#DB8758"),
+            background: Option::from(String::from("#3D1F16")),
+            black: Option::from(String::from("#401F10")),
+            blue: Option::from(String::from("#314573")),
+            bright_black: Option::from(String::from("#6E6E6E")),
+            bright_blue: Option::from(String::from("#5476B7")),
+            bright_cyan: Option::from(String::from("#8CD2E6")),
+            bright_green: Option::from(String::from("#9EC54F")),
+            bright_purple: Option::from(String::from("#B674C2")),
+            bright_red: Option::from(String::from("#C1443D")),
+            bright_white: Option::from(String::from("#FFFFFF")),
+            bright_yellow: Option::from(String::from("#DBA15C")),
+            cyan: Option::from(String::from("#4F8A99")),
+            foreground: Option::from(String::from("#FCE7D2")),
+            green: Option::from(String::from("#516C57")),
+            name: Option::from(String::from("RedPanda")),
+            purple: Option::from(String::from("#82578E")),
+            red: Option::from(String::from("#B13D14")),
+            selection_background: Option::from(String::from("#4F8A99")),
+            white:Option::from( String::from("#DBD3CE")),
+            yellow: Option::from(String::from("#DB8758")),
         };
 
-        terminal_config.schemes.retain(|s| s.name != "RedPanda");
+        terminal_config.schemes.retain(|s| s.name.clone().expect("im lazy rn") != "RedPanda");
         terminal_config.schemes.push(scheme);
-
-        for profile in terminal_config.profiles.list.iter_mut() {
-            profile.background_image = Some(panda_path.clone());
-            profile.background_image_opacity = Some(0.27);
-            profile.opacity = Some(97);
-            profile.background_image_stretch_mode = Some(String::from("none"));
-            profile.background_image_alignment = Some(String::from("bottomRight"));
+        
+        match &mut terminal_config.profiles {
+            Profiles::ProfileListArray (profiles) => {
+                for profile in profiles.iter_mut() {
+                    profile.background_image = Some(panda_path.clone());
+                    profile.background_image_opacity = Some(0.27);
+                    //profile.opacity = Some(97);
+                    profile.background_image_stretch_mode = Some(BackgroundImageStretchMode::None);
+                    profile.background_image_alignment = Some(BackgroundImageAlignment::BottomRight);
+                };
+            },
+            Profiles::ProfilesObject(_) => {
+                //ignore for now
+            }
         }
+        
 
         self.terminal_config_repository
             .update_configuration(terminal_config)
@@ -84,9 +95,16 @@ impl ConfigurationModelTrait for ConfigurationModel {
 
     async fn update_color_scheme(&self, color_scheme: &str) -> Result<(), ConfigurationModelError> {
         let mut terminal_config = self.terminal_config_repository.get_configuration().await?;
-
-        for profile in terminal_config.profiles.list.iter_mut() {
-            profile.color_scheme = Some(color_scheme.to_string());
+        
+        match &mut terminal_config.profiles {
+            Profiles::ProfileListArray (ref mut profiles) => {
+                for profile in profiles.iter_mut() {
+                    profile.color_scheme = Some(color_scheme.to_string());
+                };
+            },
+            Profiles::ProfilesObject(_) => {
+                //ignore for now
+            }
         }
 
         self.terminal_config_repository
@@ -102,7 +120,7 @@ impl ConfigurationModelTrait for ConfigurationModel {
         let color_schemes: Vec<String> = terminal_config
             .schemes
             .iter()
-            .map(|s| s.name.to_string())
+            .map(|s| s.name.clone().expect("lazyy rn", ).to_string())
             .collect();
 
         Ok(color_schemes)
