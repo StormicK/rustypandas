@@ -38,7 +38,7 @@ impl ConfigurationModel {
 impl ConfigurationModelTrait for ConfigurationModel {
     async fn update_gif(&self, search_query: &str) -> Result<(), ConfigurationModelError> {
         let mut terminal_config = self.terminal_config_repository.get_configuration().await?;
-        let panda_path = self.gif_repository.get_gif_by_search(search_query).await?;
+        let gif_path = self.gif_repository.get_gif_by_search(search_query).await?;
 
         let scheme = Scheme {
             background: String::from("#3D1F16"),
@@ -68,9 +68,9 @@ impl ConfigurationModelTrait for ConfigurationModel {
         terminal_config.schemes.push(scheme);
 
         for profile in terminal_config.profiles.list.iter_mut() {
-            profile.background_image = Some(panda_path.clone());
+            profile.background_image = Some(gif_path.clone());
             profile.background_image_opacity = Some(0.27);
-            profile.opacity = Some(97);
+            profile.opacity = Some(99);
             profile.background_image_stretch_mode = Some(String::from("none"));
             profile.background_image_alignment = Some(String::from("bottomRight"));
         }

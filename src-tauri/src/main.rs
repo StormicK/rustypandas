@@ -6,52 +6,46 @@ use tauri::{Manager, SystemTray, SystemTrayMenu};
 #[macro_use]
 extern crate lazy_static;
 
-mod controllers;
 mod models;
 mod repositories;
 
-use controllers::configuration::{ ConfigurationController, ConfigurationControllerTrait };
-use models::configuration::ConfigurationModel;
+use models::configuration::{ ConfigurationModel, ConfigurationModelTrait };
 use repositories::configuration::repository::JsonConfigurationRepository;
 use repositories::gif::repository::RESTGifRepository;
 
 use dotenv::dotenv;
 
 lazy_static! {
-    static ref CONFIGURATION_CONTROLLER: ConfigurationController = {
+    static ref CONFIGURATION_MODEL: ConfigurationModel = {
         dotenv().ok();
 
         let gif_repository: RESTGifRepository =
             RESTGifRepository::new(std::env::var("GIPHY_API_KEY").unwrap());
 
-        //get appdata directory
         let path = data_local_dir().unwrap();
         let configuration_repository: JsonConfigurationRepository = JsonConfigurationRepository::new(format!("{}\\Packages\\Microsoft.WindowsTerminal_8wekyb3d8bbwe\\LocalState\\settings.json", path.to_str().unwrap()));
-        let configuration_model: ConfigurationModel =
-            ConfigurationModel::new(configuration_repository, gif_repository);
-
-        controllers::configuration::ConfigurationController::new(configuration_model)
+        
+        ConfigurationModel::new(configuration_repository, gif_repository)
     };
 }
 
-// Learn more about Tauri commands at https://tauri.app/v1/guides/features/command
 #[tauri::command(rename_all = "snake_case")]
 async fn update_gif(search_query: String) -> Result<(), ()> {
-    let _ = CONFIGURATION_CONTROLLER.update_gif(&search_query).await;
+    let _ = CONFIGURATION_MODEL.update_gif(&search_query).await;
 
     Ok(())
 }
 
 #[tauri::command(rename_all = "snake_case")]
 async fn update_color_scheme(color_scheme: String) -> Result<(), ()> {
-    let _ = CONFIGURATION_CONTROLLER.update_color_scheme(&color_scheme).await;
+    let _ = CONFIGURATION_MODEL.update_color_scheme(&color_scheme).await;
 
     Ok(())
 }
 
 #[tauri::command(rename_all = "snake_case")]
 async fn get_color_schemes() -> Result<Vec<String>, ()> {
-    match CONFIGURATION_CONTROLLER.get_color_schemes().await {
+    match CONFIGURATION_MODEL.get_color_schemes().await {
         Ok(color_schemes) => Ok(color_schemes),
         Err(_) => Err(()),
     }

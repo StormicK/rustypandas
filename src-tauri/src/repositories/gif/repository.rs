@@ -6,6 +6,7 @@ use async_trait::async_trait;
 use dirs::data_local_dir;
 use reqwest::Client;
 use url::Url;
+use rand::Rng;
 
 use crate::repositories::gif::dto::GiphyResponse;
 use crate::repositories::gif::errors::RepositoryError;
@@ -35,7 +36,7 @@ impl RESTGifRepository {
             [
                 ("api_key", self.api_key.to_string()),
                 ("q", query.to_string()),
-                ("limit", String::from("1")),
+                ("limit", String::from("30")),
             ],
         )?;
 
@@ -44,7 +45,7 @@ impl RESTGifRepository {
 
     async fn save_url_to_app_directory(&self, url: &str) -> Result<String, RepositoryError> {
         let mut path = Self::create_program_dir()?;
-        path.push("red_panda.gif");
+        path.push(format!("{}.gif", get_random_numbers_as_string()));
 
         let mut file = File::create(path.clone())?;
 
@@ -94,9 +95,7 @@ impl GifRepository for RESTGifRepository {
 
         let giphy_response = response.json::<GiphyResponse>().await?;
 
-        let giphy_data = giphy_response
-            .data
-            .first()
+        let giphy_data = get_random_item(&giphy_response.data)
             .ok_or(RepositoryError::NotFoundError(String::from(
                 "No images found",
             )))?;
@@ -105,4 +104,24 @@ impl GifRepository for RESTGifRepository {
             .save_url_to_app_directory(&giphy_data.images.original.url)
             .await?)
     }
+}
+
+fn get_random_item<T>(vec: &Vec<T>) -> Option<&T> {
+    if vec.is_empty() {
+        return None;
+    }
+
+    let index = rand::thread_rng().gen_range(0..vec.len());
+    Some(&vec[index])
+}
+
+fn get_random_numbers_as_string() -> String {
+    let mut rng = rand::thread_rng();
+    let mut result = String::new();
+
+    for _ in 0..3 {
+        result.push_str(&rng.gen_range(0..10).to_string());
+    }
+
+    result
 }

@@ -4,13 +4,14 @@
 
 # Rusty Pandas - Windows Terminal Theme Configuration Tool
 
-Rusty Pandas is a theme configuration tool for Windows Terminal, designed to enhance the user experience by providing an intuitive and straightforward way to customize the appearance of Windows Terminal. It leverages Tauri and Leptos to deliver a powerful and efficient application.
+Rusty Pandas is a theme configuration tool for Windows Terminal, designed to enhance the user experience by providing an intuitive and straightforward way to customize the appearance of Windows Terminal. It leverages Tauri and SolidJS to deliver a powerful and efficient application.
+
+It is currently in development and not ready for production use. We are working hard to bring you the best possible experience and will release the first version soon. Stay tuned!
 
 ## Features
 
-- Easily configure themes for Windows Terminal.
-- Utilizes Tauri and Leptos for a seamless cross-platform experience.
 - Fetches dynamic GIFs using the GIPHY API to add a touch of fun to your terminal.
+- Color Scheme Picker letting you change the windows terminal color scheme on the fly.
 
 ## Getting Started
 
@@ -23,7 +24,7 @@ Make sure you have the following tools installed:
 - [Rust](https://www.rust-lang.org/) - To build and run the project.
 - [Cargo](https://crates.io/) - Rusts Package Manager.
 - [Tauri](https://tauri.app/) - UI framework for Rust.
-- [Trunk](https://trunkrs.dev/) - Bundler for WASM.
+- [NPM](https://www.npmjs.com/) - JS Package Manager.
 - [Windows Terminal](https://www.microsoft.com/en-us/p/windows-terminal/9n0dx20hk701) - The terminal in which you will apply the custom themes.
 
 ### Installation
@@ -41,19 +42,19 @@ cd rustypandas
 cargo install tauri-cli
 ```
 
-3. Install the WASM dependencies:
+3. Install the npm dependencies:
 
 ```bash
-cargo install trunk
-```
-
-3. Add the WASM target to Rust:
-
-```bash
-rustup target add wasm32-unknown-unknown
+npm install
 ```
 
 ### Usage
+
+To start the tailwindcss, use the following command:
+
+```bash
+npx tailwindcss -i ./src/styles.css -o ./dist/styles.css --watch
+```
 
 To start the application, use the following command:
 
@@ -69,7 +70,7 @@ To build the application, use the following command:
 cargo tauri build
 ```
 
-This will create a `dist` folder containing the executable.
+This will create a `dist` folder containing the executable. It will also create an installer.
 
 ## Contributing
 
@@ -87,7 +88,7 @@ Rusty Pandas is open-source software licensed under the [MIT License](LICENSE).
 
 ## Acknowledgments
 
-- The Tauri and Leptos communities for their excellent tools and support.
+- The Tauri and SolidJS communities for their excellent tools and support. I also want to thank the developers of Giphy and TailwindCSS for their amazing APIs and frameworks.
 
 ## Contact
 
