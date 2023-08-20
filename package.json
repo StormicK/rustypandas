@@ -1,6 +1,6 @@
 {
-  "name": "tauri-rustypandas-typescriptfrontend",
-  "version": "0.0.0",
+  "name": "rustypandas-typescript",
+  "version": "0.0.2",
   "description": "",
   "scripts": {
     "start": "vite",
