@@ -119,8 +119,8 @@ fn get_random_numbers_as_string() -> String {
     let mut rng = rand::thread_rng();
     let mut result = String::new();
 
-    for _ in 0..3 {
-        result.push_str(&rng.gen_range(0..10).to_string());
+    for _ in 0..2 {
+        result.push_str(&rng.gen_range(0..3).to_string());
     }
 
     result
