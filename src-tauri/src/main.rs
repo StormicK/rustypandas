@@ -1,7 +1,7 @@
 // Prevents additional console window on Windows in release, DO NOT REMOVE!!
 #![cfg_attr(not(debug_assertions), windows_subsystem = "windows")]
 use dirs::data_local_dir;
-use tauri::{Manager, SystemTray, SystemTrayMenu};
+use tauri::{Manager, SystemTray, SystemTrayMenu, CustomMenuItem};
 
 #[macro_use]
 extern crate lazy_static;
@@ -52,7 +52,7 @@ async fn get_color_schemes() -> Result<Vec<String>, ()> {
 }
 
 fn main() {
-    let tray_menu = SystemTrayMenu::new();
+    let tray_menu = SystemTrayMenu::new().add_item(CustomMenuItem::new("quit".to_string(), "Quit").accelerator("Cmd+Q"));
     let system_tray = SystemTray::new().with_menu(tray_menu);
 
     tauri::Builder::default()
@@ -63,7 +63,13 @@ fn main() {
                 let window = app.get_window("main").unwrap();
                 window.show().unwrap();
                 window.set_focus().unwrap();
-            }
+            },
+            tauri::SystemTrayEvent::MenuItemClick { id, .. } => match id.as_str() {
+                "quit" => {
+                    std::process::exit(0);
+                }
+                _ => {}
+            },
             _ => {}
         })
         .on_window_event(|event| match event.event() {

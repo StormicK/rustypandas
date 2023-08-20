@@ -1,4 +1,4 @@
-import { createResource, createSignal } from "solid-js";
+import { Resource, createResource, createSignal } from "solid-js";
 import { invoke } from "@tauri-apps/api/tauri";
 
 async function fetchColorSchemes(): Promise<string[]> {
@@ -11,20 +11,20 @@ export type ThemeViewModel = {
   handleGifSearch: () => Promise<void>;
   selectedColorScheme: () => string;
   handleColorSchemeChange: (event: Event) => Promise<void>;
-  colorSchemes: string[] | undefined;
+  colorSchemes: Resource<string[]>;
   refreshColorSchemes: () => void;
 };
 
 export function useThemeViewModel(): ThemeViewModel {
-  const [searchQuery, setSearchQuery] = createSignal("");
-  const [selectedScheme, setSelectedValue] = createSignal<string>("unloaded");
-  const [schemesResource, loadColorSchemes] = createResource(fetchColorSchemes);
+  const [gifSearchQuery, setGifSearchQuery] = createSignal("");
+  const [selectedColorScheme, setSelectedValue] = createSignal<string>("unloaded");
+  const [colorSchemesResource, loadColorSchemes] = createResource(fetchColorSchemes);
 
   const handleGifSearch = async () => {
-    await invoke("update_gif", { search_query: searchQuery() });
+    await invoke("update_gif", { search_query: gifSearchQuery() });
   };
 
-  const handleSchemeChange = async (event: Event) => {
+  const handleColorSchemeChange = async (event: Event) => {
     const target = event.target as HTMLSelectElement;
     const selectedName = target.value;
     setSelectedValue(selectedName);
@@ -34,12 +34,12 @@ export function useThemeViewModel(): ThemeViewModel {
   loadColorSchemes.refetch();
 
   return {
-    gifSearchQuery: searchQuery,
-    setGifSearchQuery: setSearchQuery,
+    gifSearchQuery,
+    setGifSearchQuery,
     handleGifSearch,
-    selectedColorScheme: selectedScheme,
-    handleColorSchemeChange: handleSchemeChange,
-    colorSchemes: schemesResource(),
+    selectedColorScheme,
+    handleColorSchemeChange,
+    colorSchemes: colorSchemesResource,
     refreshColorSchemes: loadColorSchemes.refetch,
   };
 }

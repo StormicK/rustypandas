@@ -4,8 +4,8 @@ import SideNavigation, { NavItemProps } from "./view/SideNavigation";
 import { ThemeView } from "./view/ThemeView";
 
 const navigationItems: NavItemProps[] = [
-    { link: "/theme", text: "Theme" },
-    { link: "/worktime", text: "Work Time" },
+    { link: "/", text: "Theme" },
+    //{ link: "/worktime", text: "Work Time" },
 ];
 
 function WorkTime() {
@@ -24,7 +24,7 @@ export default function App() {
         <SideNavigation navItemProps={navigationItems} />
       </div>
       <Routes>
-        <Route path="/theme" element={ <ThemeView></ThemeView> } />
+        <Route path="/" element={ <ThemeView></ThemeView> } />
         <Route path="/worktime" element={ <WorkTime></WorkTime> } />
       </Routes>
     </div>
