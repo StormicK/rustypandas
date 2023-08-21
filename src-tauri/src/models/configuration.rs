@@ -68,10 +68,10 @@ impl ConfigurationModelTrait for ConfigurationModel {
         terminal_config.schemes.push(scheme);
 
         for profile in terminal_config.profiles.list.iter_mut() {
-            profile.background_image = Some(gif_path.clone());
-            profile.background_image_opacity = Some(0.27);
-            profile.background_image_stretch_mode = Some(String::from("none"));
-            profile.background_image_alignment = Some(String::from("bottomRight"));
+            profile.insert(String::from("backgroundImage"), serde_json::Value::String(gif_path.clone()));
+            profile.entry(String::from("backgroundImageOpacity")).or_insert(serde_json::Value::Number(serde_json::Number::from_f64(0.27).unwrap()));
+            profile.insert(String::from("backgroundImageStretchMode"), serde_json::Value::String(String::from("none")));
+            profile.insert(String::from("backgroundImageAlignment"), serde_json::Value::String(String::from("bottomRight")));
         }
 
         self.terminal_config_repository
@@ -85,7 +85,7 @@ impl ConfigurationModelTrait for ConfigurationModel {
         let mut terminal_config = self.terminal_config_repository.get_configuration().await?;
 
         for profile in terminal_config.profiles.list.iter_mut() {
-            profile.color_scheme = Some(color_scheme.to_string());
+            profile["color_scheme"] = serde_json::Value::String(color_scheme.to_string());
         }
 
         self.terminal_config_repository

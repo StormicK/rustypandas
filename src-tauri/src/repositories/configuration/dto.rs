@@ -73,67 +73,8 @@ pub struct TerminalConfig {
 #[derive(Debug, Deserialize, Serialize)]
 pub struct Profiles {
     pub defaults: Map<String, Value>,
-    pub list: Vec<Profile>,
+    pub list: Vec<Map<String, Value>>,
 }
-
-#[derive(Debug, Deserialize, Serialize)]
-#[serde(rename_all = "camelCase")]
-pub struct Profile {
-    acrylic_opacity: Option<f64>,
-    antialiasing_mode: Option<String>,
-    background: Option<String>,
-    unfocused_appearance: Option<Value>,
-    font: Option<Value>,
-    pub background_image: Option<String>,
-    pub background_image_alignment: Option<String>,
-    pub background_image_opacity: Option<f64>,
-    pub background_image_stretch_mode: Option<String>,
-    bell_style: Option<Value>,
-    bell_sound: Option<Value>,
-    close_on_exit: Option<Value>,
-    pub color_scheme: Option<String>,
-    commandline: Option<String>,
-    cursor_color: Option<Value>,
-    cursor_height: Option<i32>,
-    cursor_shape: Option<String>,
-    elevate: Option<bool>,
-    environment: Option<Value>,
-    #[serde(rename = "experimental.autoMarkPrompts")]
-    experimental_auto_mark_prompts: Option<bool>,
-    #[serde(rename = "experimental.connectionPassthroughMode")]
-    experimental_connection_passthrough_mode: Option<bool>,
-    #[serde(rename = "experimental.retroTerminalEffect")]
-    experimental_retro_terminal_effect: Option<bool>,
-    #[serde(rename = "experimental.showMarksOnScrollbar")]
-    experimental_show_marks_on_scrollbar: Option<bool>,
-    #[serde(rename = "experimental.pixelShaderPath")]
-    experimental_pixel_shader_path: Option<String>,
-    use_atlas_engine: Option<bool>,
-    font_face: Option<String>,
-    font_size: Option<f64>,
-    font_weight: Option<Value>,
-    intense_text_style: Option<String>,
-    foreground: Option<Value>,
-    guid: String,
-    hidden: bool,
-    history_size: Option<i32>,
-    icon: Option<Value>,
-    name: String,
-    opacity: Option<f64>,
-    padding: Option<Value>,
-    adjust_indistinguishable_colors: Option<String>,
-    scrollbar_state: Option<String>,
-    selection_background: Option<Value>,
-    snap_on_input: Option<bool>,
-    alt_gr_aliasing: Option<bool>,
-    source: Option<String>,
-    starting_directory: Option<String>,
-    suppress_application_title: Option<bool>,
-    tab_color: Option<Value>,
-    tab_title: Option<String>,
-    use_acrylic: Option<bool>,
-}
-
 
 #[derive(Debug, Deserialize, Serialize)]
 #[serde(rename_all = "camelCase")]
