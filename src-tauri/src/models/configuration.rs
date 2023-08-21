@@ -70,7 +70,6 @@ impl ConfigurationModelTrait for ConfigurationModel {
         for profile in terminal_config.profiles.list.iter_mut() {
             profile.background_image = Some(gif_path.clone());
             profile.background_image_opacity = Some(0.27);
-            profile.opacity = Some(99);
             profile.background_image_stretch_mode = Some(String::from("none"));
             profile.background_image_alignment = Some(String::from("bottomRight"));
         }

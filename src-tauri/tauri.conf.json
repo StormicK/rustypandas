@@ -25,7 +25,7 @@
     "bundle": {
       "active": true,
       "targets": "all",
-      "identifier": "de.tinyslowhands.tauri-rustypandas",
+      "identifier": "de.tinyslowhands.rustypandas",
       "icon": [
         "icons/red-panda.ico"
       ]
@@ -38,7 +38,7 @@
         "fullscreen": false,
         "resizable": false,
         "title": "RustyPandas",
-        "width": 410,
+        "width": 430,
         "height": 240
       }
     ]
