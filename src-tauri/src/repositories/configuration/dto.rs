@@ -6,7 +6,7 @@ use serde_json::{Value, Map};
 pub struct TerminalConfig {
     #[serde(rename = "$schema")]
     schema: Value,
-    default_profile: Value,
+    pub default_profile: String,
     pub profiles: Profiles,
     pub schemes: Vec<Scheme>,
 

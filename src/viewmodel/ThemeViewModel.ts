@@ -5,6 +5,10 @@ async function fetchColorSchemes(): Promise<string[]> {
   return await invoke("get_color_schemes");
 }
 
+async function fetchProfiles(): Promise<string[]> {
+  return await invoke("get_profiles");
+}
+
 export type ThemeViewModel = {
   gifSearchQuery: () => string;
   setGifSearchQuery: (query: string) => void;
@@ -13,12 +17,17 @@ export type ThemeViewModel = {
   handleColorSchemeChange: (event: Event) => Promise<void>;
   colorSchemes: Resource<string[]>;
   refreshColorSchemes: () => void;
+  selectedProfile: () => string;
+  handleProfileChange: (event: Event) => Promise<void>;
+  profiles: Resource<string[]>;
 };
 
 export function useThemeViewModel(): ThemeViewModel {
   const [gifSearchQuery, setGifSearchQuery] = createSignal("");
-  const [selectedColorScheme, setSelectedValue] = createSignal<string>("unloaded");
+  const [selectedColorScheme, setSelectedColorScheme] = createSignal<string>("unloaded");
+  const [selectedProfile, setSelectedProfile] = createSignal<string>("unloaded");
   const [colorSchemesResource, loadColorSchemes] = createResource(fetchColorSchemes);
+  const [profilesResource, loadProfiles] = createResource(fetchProfiles);
 
   const handleGifSearch = async () => {
     await invoke("update_gif", { search_query: gifSearchQuery() });
@@ -27,11 +36,19 @@ export function useThemeViewModel(): ThemeViewModel {
   const handleColorSchemeChange = async (event: Event) => {
     const target = event.target as HTMLSelectElement;
     const selectedName = target.value;
-    setSelectedValue(selectedName);
+    setSelectedColorScheme(selectedName);
     await invoke("update_color_scheme", { color_scheme: selectedName });
   };
 
+  const handleProfileChange = async (event: Event) => {
+    const target = event.target as HTMLSelectElement;
+    const selectedName = target.value;
+    setSelectedProfile(selectedName);
+    await invoke("set_current_profile", { profile: selectedName });
+  };
+
   loadColorSchemes.refetch();
+  loadProfiles.refetch();
 
   return {
     gifSearchQuery,
@@ -41,5 +58,8 @@ export function useThemeViewModel(): ThemeViewModel {
     handleColorSchemeChange,
     colorSchemes: colorSchemesResource,
     refreshColorSchemes: loadColorSchemes.refetch,
+    selectedProfile,
+    handleProfileChange,
+    profiles: profilesResource,
   };
 }

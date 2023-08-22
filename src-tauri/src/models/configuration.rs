@@ -1,3 +1,5 @@
+use std::sync::Mutex;
+
 use crate::repositories::{
     configuration::{
         dto::Scheme,
@@ -14,12 +16,16 @@ pub trait ConfigurationModelTrait {
     async fn update_gif(&self, search_query: &str) -> Result<(), ConfigurationModelError>;
     async fn update_color_scheme(&self, color_scheme: &str) -> Result<(), ConfigurationModelError>;
     async fn get_color_schemes(&self) -> Result<Vec<String>, ConfigurationModelError>;
+    async fn get_profiles(&self) -> Result<Vec<String>, ConfigurationModelError>;
+    async fn set_current_profile(&self, profile: &str) -> Result<(), ConfigurationModelError>;
+    async fn get_current_profile(&self) -> Result<String, ConfigurationModelError>;
 }
 
 #[derive(Debug)]
 pub struct ConfigurationModel {
     terminal_config_repository: JsonConfigurationRepository,
     gif_repository: RESTGifRepository,
+    current_profile: Mutex<Option::<String>>,
 }
 
 impl ConfigurationModel {
@@ -28,8 +34,9 @@ impl ConfigurationModel {
         gif_repository: RESTGifRepository,
     ) -> Self {
         Self {
-            terminal_config_repository,
-            gif_repository,
+            terminal_config_repository: terminal_config_repository,
+            gif_repository: gif_repository,
+            current_profile: Mutex::from(None),
         }
     }
 }
@@ -68,10 +75,13 @@ impl ConfigurationModelTrait for ConfigurationModel {
         terminal_config.schemes.push(scheme);
 
         for profile in terminal_config.profiles.list.iter_mut() {
-            profile.insert(String::from("backgroundImage"), serde_json::Value::String(gif_path.clone()));
-            profile.entry(String::from("backgroundImageOpacity")).or_insert(serde_json::Value::Number(serde_json::Number::from_f64(0.27).unwrap()));
-            profile.insert(String::from("backgroundImageStretchMode"), serde_json::Value::String(String::from("none")));
-            profile.insert(String::from("backgroundImageAlignment"), serde_json::Value::String(String::from("bottomRight")));
+            if profile["name"].as_str().unwrap().to_string() == self.get_current_profile().await? {
+                println!("Setting gif to: {}", gif_path);
+                profile.insert(String::from("backgroundImage"), serde_json::Value::String(gif_path.clone()));
+                profile.entry(String::from("backgroundImageOpacity")).or_insert(serde_json::Value::Number(serde_json::Number::from_f64(0.27).unwrap()));
+                profile.insert(String::from("backgroundImageStretchMode"), serde_json::Value::String(String::from("none")));
+                profile.insert(String::from("backgroundImageAlignment"), serde_json::Value::String(String::from("bottomRight")));
+            }
         }
 
         self.terminal_config_repository
@@ -85,7 +95,10 @@ impl ConfigurationModelTrait for ConfigurationModel {
         let mut terminal_config = self.terminal_config_repository.get_configuration().await?;
 
         for profile in terminal_config.profiles.list.iter_mut() {
-            profile["color_scheme"] = serde_json::Value::String(color_scheme.to_string());
+            if profile["name"].as_str().unwrap().to_string() == self.get_current_profile().await? {
+                println!("Setting color scheme to: {}", color_scheme);
+                profile["colorScheme"] = serde_json::Value::String(color_scheme.to_string());
+            }
         }
 
         self.terminal_config_repository
@@ -93,6 +106,63 @@ impl ConfigurationModelTrait for ConfigurationModel {
             .await?;
 
         Ok(())
+    }
+
+    async fn get_profiles(&self) -> Result<Vec<String>, ConfigurationModelError> {
+        let terminal_config = self.terminal_config_repository.get_configuration().await?;
+
+        let profiles: Vec<String> = terminal_config
+            .profiles
+            .list
+            .iter()
+            .map(|s| s["name"].as_str().unwrap().to_string())
+            .collect();
+
+        println!("{:?}", profiles);
+
+        Ok(profiles)
+    }
+
+    async fn set_current_profile(&self, profile: &str) -> Result<(), ConfigurationModelError> {
+        let mut terminal_config = self.terminal_config_repository.get_configuration().await?;
+
+        for terminal_profile in terminal_config.profiles.list.iter_mut() {
+            if terminal_profile["name"].as_str().unwrap().to_string() == profile {
+                println!("Setting profile to: {}", profile);
+                let mut locked_profile = self.current_profile.lock().unwrap();
+                locked_profile.replace(terminal_profile["name"].as_str().unwrap().to_string());
+            }
+        }
+
+        self.terminal_config_repository
+            .update_configuration(terminal_config)
+            .await?;
+
+        Ok(())
+    }
+
+    async fn get_current_profile(&self) -> Result<String, ConfigurationModelError> {
+        let terminal_config = self.terminal_config_repository.get_configuration().await?;
+
+        //get stuff from arc
+        let current_profile = self.current_profile.lock().unwrap();
+        let current_profile = match current_profile.as_ref() {
+            Some(profile) => profile.clone(),
+            None => {
+                let default_profile = terminal_config
+                    .profiles
+                    .list
+                    .iter()
+                    .filter(|p| p["guid"].as_str().unwrap() == terminal_config.default_profile);
+                
+                default_profile
+                    .map(|s| s["name"].as_str().unwrap().to_string())
+                    .collect::<Vec<String>>()[0].clone()
+            },
+        };
+
+        println!("Current profile: {}", current_profile);
+        Ok(current_profile.clone())
     }
 
     async fn get_color_schemes(&self) -> Result<Vec<String>, ConfigurationModelError> {

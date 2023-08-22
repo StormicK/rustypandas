@@ -30,6 +30,33 @@ lazy_static! {
 }
 
 #[tauri::command(rename_all = "snake_case")]
+async fn get_profiles() -> Result<Vec<String>, ()> {
+    let result = match CONFIGURATION_MODEL.get_profiles().await {
+        Ok(profiles) => Ok(profiles),
+        Err(_) => return Err(()),
+    };
+    
+    result
+}
+
+#[tauri::command(rename_all = "snake_case")]
+async fn set_current_profile(profile: String) -> Result<(), ()> {
+    let _ = CONFIGURATION_MODEL.set_current_profile(&profile).await;
+
+    Ok(())
+}
+
+#[tauri::command(rename_all = "snake_case")]
+async fn get_current_profile() -> Result<String, ()> {
+    let result = match CONFIGURATION_MODEL.get_current_profile().await {
+        Ok(profile) => Ok(profile),
+        Err(_) => return Err(()),
+    };
+    
+    result
+}
+
+#[tauri::command(rename_all = "snake_case")]
 async fn update_gif(search_query: String) -> Result<(), ()> {
     let _ = CONFIGURATION_MODEL.update_gif(&search_query).await;
 
@@ -56,7 +83,7 @@ fn main() {
     let system_tray = SystemTray::new().with_menu(tray_menu);
 
     tauri::Builder::default()
-        .invoke_handler(tauri::generate_handler![update_gif, update_color_scheme, get_color_schemes])
+        .invoke_handler(tauri::generate_handler![update_gif, update_color_scheme, get_color_schemes, get_profiles, get_current_profile, set_current_profile])
         .system_tray(system_tray)
         .on_system_tray_event(|app, event| match event {
             tauri::SystemTrayEvent::LeftClick { .. } => {
