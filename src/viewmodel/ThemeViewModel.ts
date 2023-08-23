@@ -9,6 +9,10 @@ async function fetchProfiles(): Promise<string[]> {
   return await invoke("get_profiles");
 }
 
+async function fetchCurrentProfile(): Promise<string> {
+  return await invoke("get_current_profile");
+}
+
 export type ThemeViewModel = {
   gifSearchQuery: () => string;
   setGifSearchQuery: (query: string) => void;
@@ -47,6 +51,12 @@ export function useThemeViewModel(): ThemeViewModel {
     await invoke("set_current_profile", { profile: selectedName });
   };
 
+  const fetchAndSetCurrentProfile = async () => {
+    const currentProfile = await fetchCurrentProfile();
+    setSelectedProfile(currentProfile);
+  };
+
+  fetchAndSetCurrentProfile();
   loadColorSchemes.refetch();
   loadProfiles.refetch();
 

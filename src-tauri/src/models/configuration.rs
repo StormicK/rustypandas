@@ -8,6 +8,7 @@ use crate::repositories::{
     gif::repository::{GifRepository, RESTGifRepository},
 };
 use async_trait::async_trait;
+use serde_json::Value;
 
 use crate::models::errors::ConfigurationModelError;
 
@@ -36,7 +37,14 @@ impl ConfigurationModel {
         Self {
             terminal_config_repository: terminal_config_repository,
             gif_repository: gif_repository,
-            current_profile: Mutex::from(None),
+            current_profile: Mutex::new(None),
+        }
+    }
+
+    fn extract_string(&self, value: &serde_json::Map<String, Value>, attribute: &str) -> Result<String, ConfigurationModelError> {
+        match &value[attribute] {
+            Value::String(s) => Ok(s.clone()),
+            _ => Err(ConfigurationModelError::ConfigurationFailedError()),
         }
     }
 }
@@ -75,12 +83,18 @@ impl ConfigurationModelTrait for ConfigurationModel {
         terminal_config.schemes.push(scheme);
 
         for profile in terminal_config.profiles.list.iter_mut() {
-            if profile["name"].as_str().unwrap().to_string() == self.get_current_profile().await? {
+            let profile_name = match self.extract_string(&profile, "name") {
+                Ok(s) => s,
+                Err(_) => return Err(ConfigurationModelError::ConfigurationFailedError()), 
+            };
+            
+            if profile_name == self.get_current_profile().await? {
                 println!("Setting gif to: {}", gif_path);
-                profile.insert(String::from("backgroundImage"), serde_json::Value::String(gif_path.clone()));
-                profile.entry(String::from("backgroundImageOpacity")).or_insert(serde_json::Value::Number(serde_json::Number::from_f64(0.27).unwrap()));
-                profile.insert(String::from("backgroundImageStretchMode"), serde_json::Value::String(String::from("none")));
-                profile.insert(String::from("backgroundImageAlignment"), serde_json::Value::String(String::from("bottomRight")));
+                profile.insert(String::from("backgroundImage"), Value::String(gif_path.clone()));
+                profile.entry(String::from("backgroundImageOpacity")).or_insert(Value::Number(serde_json::Number::from_f64(0.27).unwrap()));
+                profile.insert(String::from("backgroundImageStretchMode"), Value::String(String::from("none")));
+                profile.insert(String::from("backgroundImageAlignment"), Value::String(String::from("bottomRight")));
+                break;
             }
         }
 
@@ -95,9 +109,14 @@ impl ConfigurationModelTrait for ConfigurationModel {
         let mut terminal_config = self.terminal_config_repository.get_configuration().await?;
 
         for profile in terminal_config.profiles.list.iter_mut() {
-            if profile["name"].as_str().unwrap().to_string() == self.get_current_profile().await? {
+            let profile_name = match self.extract_string(&profile, "name") {
+                Ok(s) => s,
+                _ => return Err(ConfigurationModelError::ConfigurationFailedError()),
+            };
+
+            if profile_name == self.get_current_profile().await? {
                 println!("Setting color scheme to: {}", color_scheme);
-                profile["colorScheme"] = serde_json::Value::String(color_scheme.to_string());
+                profile["colorScheme"] = Value::String(color_scheme.to_string());
             }
         }
 
@@ -111,26 +130,35 @@ impl ConfigurationModelTrait for ConfigurationModel {
     async fn get_profiles(&self) -> Result<Vec<String>, ConfigurationModelError> {
         let terminal_config = self.terminal_config_repository.get_configuration().await?;
 
-        let profiles: Vec<String> = terminal_config
+        let profiles = terminal_config
             .profiles
             .list
             .iter()
-            .map(|s| s["name"].as_str().unwrap().to_string())
-            .collect();
+            .map(|profile| {
+                match self.extract_string(&profile, "name") {
+                    Ok(s) => Ok(s),
+                    _ => return Err(ConfigurationModelError::ConfigurationFailedError()),
+                }
+            }).collect::<Result<Vec<String>, ConfigurationModelError>>()?;
 
         println!("{:?}", profiles);
 
         Ok(profiles)
     }
 
-    async fn set_current_profile(&self, profile: &str) -> Result<(), ConfigurationModelError> {
+    async fn set_current_profile(&self, value: &str) -> Result<(), ConfigurationModelError> {
         let mut terminal_config = self.terminal_config_repository.get_configuration().await?;
 
-        for terminal_profile in terminal_config.profiles.list.iter_mut() {
-            if terminal_profile["name"].as_str().unwrap().to_string() == profile {
-                println!("Setting profile to: {}", profile);
+        for profile in terminal_config.profiles.list.iter_mut() {
+            let profile_name = match self.extract_string(&profile, "name") {
+                Ok(s) => s,
+                _ => return Err(ConfigurationModelError::ConfigurationFailedError()),
+            };
+
+            if profile_name == value {
+                println!("Setting profile to: {}", profile_name);
                 let mut locked_profile = self.current_profile.lock().unwrap();
-                locked_profile.replace(terminal_profile["name"].as_str().unwrap().to_string());
+                locked_profile.replace(profile["name"].as_str().unwrap().to_string());
             }
         }
 
@@ -144,24 +172,39 @@ impl ConfigurationModelTrait for ConfigurationModel {
     async fn get_current_profile(&self) -> Result<String, ConfigurationModelError> {
         let terminal_config = self.terminal_config_repository.get_configuration().await?;
 
-        //get stuff from arc
         let current_profile = self.current_profile.lock().unwrap();
         let current_profile = match current_profile.as_ref() {
-            Some(profile) => profile.clone(),
+            Some(profile) => {
+                println!("Getting current profile");
+                profile.clone()
+            },
             None => {
+                println!("Getting current default profile");
+                let default_profile_guid = terminal_config.default_profile;
                 let default_profile = terminal_config
                     .profiles
                     .list
                     .iter()
-                    .filter(|p| p["guid"].as_str().unwrap() == terminal_config.default_profile);
+                    .find(|profile| {
+                        let profile_guid = match self.extract_string(&profile, "guid") {
+                            Ok(s) => s,
+                            _ => return false,
+                        };
+                        profile_guid == default_profile_guid
+                    });
                 
-                default_profile
-                    .map(|s| s["name"].as_str().unwrap().to_string())
-                    .collect::<Vec<String>>()[0].clone()
+                let default_profile = match default_profile {
+                    Some(value) => value,
+                    _ => return Err(ConfigurationModelError::ConfigurationFailedError()),
+                };
+                
+                match self.extract_string(default_profile, "name") {
+                    Ok(s) => s,
+                    _ => return Err(ConfigurationModelError::ConfigurationFailedError()),
+                }
             },
         };
 
-        println!("Current profile: {}", current_profile);
         Ok(current_profile.clone())
     }
 
