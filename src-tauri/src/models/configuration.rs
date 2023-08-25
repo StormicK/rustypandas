@@ -14,9 +14,10 @@ use crate::models::errors::ConfigurationModelError;
 
 #[async_trait]
 pub trait ConfigurationModelTrait {
-    async fn update_gif(&self, search_query: &str) -> Result<(), ConfigurationModelError>;
-    async fn update_color_scheme(&self, color_scheme: &str) -> Result<(), ConfigurationModelError>;
+    async fn set_gif(&self, search_query: &str) -> Result<(), ConfigurationModelError>;
     async fn get_color_schemes(&self) -> Result<Vec<String>, ConfigurationModelError>;
+    async fn set_current_color_scheme(&self, color_scheme: &str) -> Result<(), ConfigurationModelError>;
+    async fn get_current_color_scheme(&self) -> Result<String, ConfigurationModelError>;
     async fn get_profiles(&self) -> Result<Vec<String>, ConfigurationModelError>;
     async fn set_current_profile(&self, profile: &str) -> Result<(), ConfigurationModelError>;
     async fn get_current_profile(&self) -> Result<String, ConfigurationModelError>;
@@ -42,6 +43,10 @@ impl ConfigurationModel {
     }
 
     fn extract_string(&self, value: &serde_json::Map<String, Value>, attribute: &str) -> Result<String, ConfigurationModelError> {
+        if !value.contains_key(attribute) {
+            return Err(ConfigurationModelError::ConfigurationFailedError());
+        }
+        
         match &value[attribute] {
             Value::String(s) => Ok(s.clone()),
             _ => Err(ConfigurationModelError::ConfigurationFailedError()),
@@ -51,7 +56,7 @@ impl ConfigurationModel {
 
 #[async_trait]
 impl ConfigurationModelTrait for ConfigurationModel {
-    async fn update_gif(&self, search_query: &str) -> Result<(), ConfigurationModelError> {
+    async fn set_gif(&self, search_query: &str) -> Result<(), ConfigurationModelError> {
         let mut terminal_config = self.terminal_config_repository.get_configuration().await?;
         let gif_path = self.gif_repository.get_gif_by_search(search_query).await?;
 
@@ -83,10 +88,7 @@ impl ConfigurationModelTrait for ConfigurationModel {
         terminal_config.schemes.push(scheme);
 
         for profile in terminal_config.profiles.list.iter_mut() {
-            let profile_name = match self.extract_string(&profile, "name") {
-                Ok(s) => s,
-                Err(_) => return Err(ConfigurationModelError::ConfigurationFailedError()), 
-            };
+            let profile_name = self.extract_string(&profile, "name")?;
             
             if profile_name == self.get_current_profile().await? {
                 println!("Setting gif to: {}", gif_path);
@@ -105,18 +107,15 @@ impl ConfigurationModelTrait for ConfigurationModel {
         Ok(())
     }
 
-    async fn update_color_scheme(&self, color_scheme: &str) -> Result<(), ConfigurationModelError> {
+    async fn set_current_color_scheme(&self, color_scheme: &str) -> Result<(), ConfigurationModelError> {
         let mut terminal_config = self.terminal_config_repository.get_configuration().await?;
 
         for profile in terminal_config.profiles.list.iter_mut() {
-            let profile_name = match self.extract_string(&profile, "name") {
-                Ok(s) => s,
-                _ => return Err(ConfigurationModelError::ConfigurationFailedError()),
-            };
+            let profile_name = self.extract_string(&profile, "name")?;
 
             if profile_name == self.get_current_profile().await? {
                 println!("Setting color scheme to: {}", color_scheme);
-                profile["colorScheme"] = Value::String(color_scheme.to_string());
+                profile.insert(String::from("colorScheme"), Value::String(color_scheme.to_string()));
             }
         }
 
@@ -125,6 +124,35 @@ impl ConfigurationModelTrait for ConfigurationModel {
             .await?;
 
         Ok(())
+    }
+    
+    async fn get_current_color_scheme(&self) -> Result<String, ConfigurationModelError> {
+        let terminal_config = self.terminal_config_repository.get_configuration().await?;
+
+        let current_profile = self.get_current_profile().await?;
+        let current_profile = terminal_config
+            .profiles
+            .list
+            .iter()
+            .find(|profile| {
+                let profile_name = match self.extract_string(&profile, "name") {
+                    Ok(s) => s,
+                    _ => return false,
+                };
+                profile_name == current_profile
+            });
+        
+        let current_profile = match current_profile {
+            Some(value) => value,
+            _ => return Err(ConfigurationModelError::ConfigurationFailedError()),
+        };
+
+        let color_scheme = match self.extract_string(&current_profile, "colorScheme") {
+            Ok(s) => s,
+            _ => return Ok(String::from("RedPanda")),
+        };
+
+        Ok(color_scheme.clone())
     }
 
     async fn get_profiles(&self) -> Result<Vec<String>, ConfigurationModelError> {
@@ -150,13 +178,8 @@ impl ConfigurationModelTrait for ConfigurationModel {
         let mut terminal_config = self.terminal_config_repository.get_configuration().await?;
 
         for profile in terminal_config.profiles.list.iter_mut() {
-            let profile_name = match self.extract_string(&profile, "name") {
-                Ok(s) => s,
-                _ => return Err(ConfigurationModelError::ConfigurationFailedError()),
-            };
-
-            if profile_name == value {
-                println!("Setting profile to: {}", profile_name);
+            if self.extract_string(&profile, "name")? == value {
+                println!("Setting profile to: {}", value);
                 let mut locked_profile = self.current_profile.lock().unwrap();
                 locked_profile.replace(profile["name"].as_str().unwrap().to_string());
             }
@@ -197,11 +220,10 @@ impl ConfigurationModelTrait for ConfigurationModel {
                     Some(value) => value,
                     _ => return Err(ConfigurationModelError::ConfigurationFailedError()),
                 };
+                let default_profile_name = self.extract_string(default_profile, "name")?;
+                println!("dis the default rn {:?}", default_profile_name);
+                default_profile_name 
                 
-                match self.extract_string(default_profile, "name") {
-                    Ok(s) => s,
-                    _ => return Err(ConfigurationModelError::ConfigurationFailedError()),
-                }
             },
         };
 

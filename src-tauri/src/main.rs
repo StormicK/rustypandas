@@ -58,14 +58,14 @@ async fn get_current_profile() -> Result<String, ()> {
 
 #[tauri::command(rename_all = "snake_case")]
 async fn update_gif(search_query: String) -> Result<(), ()> {
-    let _ = CONFIGURATION_MODEL.update_gif(&search_query).await;
+    let _ = CONFIGURATION_MODEL.set_gif(&search_query).await;
 
     Ok(())
 }
 
 #[tauri::command(rename_all = "snake_case")]
 async fn update_color_scheme(color_scheme: String) -> Result<(), ()> {
-    let _ = CONFIGURATION_MODEL.update_color_scheme(&color_scheme).await;
+    let _ = CONFIGURATION_MODEL.set_current_color_scheme(&color_scheme).await;
 
     Ok(())
 }
@@ -78,12 +78,20 @@ async fn get_color_schemes() -> Result<Vec<String>, ()> {
     }
 }
 
+#[tauri::command(rename_all = "snake_case")]
+async fn get_current_color_scheme() -> Result<String, ()> {
+    match CONFIGURATION_MODEL.get_current_color_scheme().await {
+        Ok(color_scheme) => Ok(color_scheme),
+        Err(_) => Err(()),
+    }
+}
+
 fn main() {
     let tray_menu = SystemTrayMenu::new().add_item(CustomMenuItem::new("quit".to_string(), "Quit").accelerator("Cmd+Q"));
     let system_tray = SystemTray::new().with_menu(tray_menu);
 
     tauri::Builder::default()
-        .invoke_handler(tauri::generate_handler![update_gif, update_color_scheme, get_color_schemes, get_profiles, get_current_profile, set_current_profile])
+        .invoke_handler(tauri::generate_handler![update_gif, update_color_scheme, get_color_schemes, get_profiles, get_current_profile, set_current_profile, get_current_color_scheme])
         .system_tray(system_tray)
         .on_system_tray_event(|app, event| match event {
             tauri::SystemTrayEvent::LeftClick { .. } => {

@@ -5,6 +5,10 @@ async function fetchColorSchemes(): Promise<string[]> {
   return await invoke("get_color_schemes");
 }
 
+async function fetchCurrentColorSchemes(): Promise<string> {
+  return await invoke("get_current_color_scheme");
+}
+
 async function fetchProfiles(): Promise<string[]> {
   return await invoke("get_profiles");
 }
@@ -24,6 +28,7 @@ export type ThemeViewModel = {
   selectedProfile: () => string;
   handleProfileChange: (event: Event) => Promise<void>;
   profiles: Resource<string[]>;
+  refreshProfiles: () => void;
 };
 
 export function useThemeViewModel(): ThemeViewModel {
@@ -37,6 +42,11 @@ export function useThemeViewModel(): ThemeViewModel {
     await invoke("update_gif", { search_query: gifSearchQuery() });
   };
 
+  const fetchAndSetCurrentColorScheme = async () => {
+    const currentColorScheme = await fetchCurrentColorSchemes();
+    setSelectedColorScheme(currentColorScheme);
+  };
+
   const handleColorSchemeChange = async (event: Event) => {
     const target = event.target as HTMLSelectElement;
     const selectedName = target.value;
@@ -44,21 +54,23 @@ export function useThemeViewModel(): ThemeViewModel {
     await invoke("update_color_scheme", { color_scheme: selectedName });
   };
 
-  const handleProfileChange = async (event: Event) => {
-    const target = event.target as HTMLSelectElement;
-    const selectedName = target.value;
-    setSelectedProfile(selectedName);
-    await invoke("set_current_profile", { profile: selectedName });
-  };
-
   const fetchAndSetCurrentProfile = async () => {
     const currentProfile = await fetchCurrentProfile();
     setSelectedProfile(currentProfile);
   };
 
-  fetchAndSetCurrentProfile();
+  const handleProfileChange = async (event: Event) => {
+    const target = event.target as HTMLSelectElement;
+    const selectedName = target.value;
+    setSelectedProfile(selectedName);
+    await invoke("set_current_profile", { profile: selectedName });
+    fetchAndSetCurrentColorScheme();
+  };
+
   loadColorSchemes.refetch();
+  fetchAndSetCurrentColorScheme();
   loadProfiles.refetch();
+  fetchAndSetCurrentProfile();
 
   return {
     gifSearchQuery,
@@ -71,5 +83,6 @@ export function useThemeViewModel(): ThemeViewModel {
     selectedProfile,
     handleProfileChange,
     profiles: profilesResource,
+    refreshProfiles: loadProfiles.refetch,
   };
 }
