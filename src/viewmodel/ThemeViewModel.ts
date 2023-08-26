@@ -1,6 +1,12 @@
 import { Resource, createResource, createSignal } from "solid-js";
 import { invoke } from "@tauri-apps/api/tauri";
 
+function sleep(ms: number): Promise<void> {
+  return new Promise((resolve) => {
+    setTimeout(resolve, ms);
+  });
+}
+
 async function fetchColorSchemes(): Promise<string[]> {
   return await invoke("get_color_schemes");
 }
@@ -20,7 +26,7 @@ async function fetchCurrentProfile(): Promise<string> {
 export type ThemeViewModel = {
   gifSearchQuery: () => string;
   setGifSearchQuery: (query: string) => void;
-  handleGifSearch: () => Promise<void>;
+  handleGifSearch: (event: Event) => Promise<void>;
   selectedColorScheme: () => string;
   handleColorSchemeChange: (event: Event) => Promise<void>;
   colorSchemes: Resource<string[]>;
@@ -38,8 +44,9 @@ export function useThemeViewModel(): ThemeViewModel {
   const [colorSchemesResource, loadColorSchemes] = createResource(fetchColorSchemes);
   const [profilesResource, loadProfiles] = createResource(fetchProfiles);
 
-  const handleGifSearch = async () => {
-    await invoke("update_gif", { search_query: gifSearchQuery() });
+  const handleGifSearch = async (event: Event) => {
+    event.preventDefault();
+    await invoke("set_gif", { search_query: gifSearchQuery() });
   };
 
   const fetchAndSetCurrentColorScheme = async () => {
@@ -51,10 +58,11 @@ export function useThemeViewModel(): ThemeViewModel {
     const target = event.target as HTMLSelectElement;
     const selectedName = target.value;
     setSelectedColorScheme(selectedName);
-    await invoke("update_color_scheme", { color_scheme: selectedName });
+    await invoke("set_color_scheme", { color_scheme: selectedName });
   };
 
   const fetchAndSetCurrentProfile = async () => {
+    await sleep(50);
     const currentProfile = await fetchCurrentProfile();
     setSelectedProfile(currentProfile);
   };
@@ -64,12 +72,10 @@ export function useThemeViewModel(): ThemeViewModel {
     const selectedName = target.value;
     setSelectedProfile(selectedName);
     await invoke("set_current_profile", { profile: selectedName });
-    fetchAndSetCurrentColorScheme();
+    await fetchAndSetCurrentColorScheme();
   };
 
-  loadColorSchemes.refetch();
-  fetchAndSetCurrentColorScheme();
-  loadProfiles.refetch();
+  Promise.all([loadColorSchemes.refetch(), loadProfiles.refetch()]);
   fetchAndSetCurrentProfile();
 
   return {

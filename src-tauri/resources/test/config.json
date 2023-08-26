@@ -1,0 +1,253 @@
+{
+    "$schema": "https://aka.ms/terminal-profiles-schema",
+    "defaultProfile": "{574e775e-4f2a-5b96-ac1e-a2962a402336}",
+    "profiles": {
+      "defaults": {},
+      "list": [
+        {
+          "backgroundImage": "C:\\Users\\André Bruns\\AppData\\Local\\panda-dir\\21.gif",
+          "backgroundImageAlignment": "bottomRight",
+          "backgroundImageOpacity": 0.27,
+          "backgroundImageStretchMode": "none",
+          "colorScheme": "RedPanda",
+          "commandline": "%SystemRoot%\\System32\\WindowsPowerShell\\v1.0\\powershell.exe",
+          "guid": "{61c54bbd-c2c6-5271-96e7-009a87ff44bf}",
+          "hidden": false,
+          "name": "Windows PowerShell"
+        },
+        {
+          "backgroundImage": "C:\\Users\\André Bruns\\AppData\\Local\\panda-dir\\14.gif",
+          "backgroundImageAlignment": "bottomRight",
+          "backgroundImageOpacity": 0.27,
+          "backgroundImageStretchMode": "none",
+          "colorScheme": "Campbell",
+          "commandline": "%SystemRoot%\\System32\\cmd.exe",
+          "guid": "{0caa0dad-35be-5f56-a8ff-afceeeaa6101}",
+          "hidden": false,
+          "name": "Eingabeaufforderung"
+        },
+        {
+          "backgroundImage": "C:\\Users\\André Bruns\\AppData\\Local\\panda-dir\\1.gif",
+          "backgroundImageAlignment": "bottomRight",
+          "backgroundImageOpacity": 0.27,
+          "backgroundImageStretchMode": "none",
+          "colorScheme": "One Half Light",
+          "guid": "{574e775e-4f2a-5b96-ac1e-a2962a402336}",
+          "hidden": false,
+          "name": "PowerShell",
+          "source": "Windows.Terminal.PowershellCore"
+        },
+        {
+          "backgroundImage": "C:\\Users\\André Bruns\\AppData\\Local\\panda-dir\\1.gif",
+          "backgroundImageAlignment": "bottomRight",
+          "backgroundImageOpacity": 0.27,
+          "backgroundImageStretchMode": "none",
+          "guid": "{b453ae62-4e3d-5e58-b989-0a998ec441b8}",
+          "hidden": false,
+          "name": "Azure Cloud Shell",
+          "source": "Windows.Terminal.Azure"
+        },
+        {
+          "colorScheme": "Solarized Light",
+          "guid": "{c307a88a-2716-5ca2-baf0-f98859f94f35}",
+          "hidden": false,
+          "name": "Developer Command Prompt for VS 2022",
+          "source": "Windows.Terminal.VisualStudio"
+        },
+        {
+          "colorScheme": "Campbell",
+          "guid": "{de7e5e07-2352-5f04-84f1-b06b707dae40}",
+          "hidden": false,
+          "name": "Developer PowerShell for VS 2022",
+          "source": "Windows.Terminal.VisualStudio"
+        }
+      ]
+    },
+    "schemes": [
+      {
+        "background": "#0C0C0C",
+        "black": "#0C0C0C",
+        "blue": "#0037DA",
+        "brightBlack": "#767676",
+        "brightBlue": "#3B78FF",
+        "brightCyan": "#61D6D6",
+        "brightGreen": "#16C60C",
+        "brightPurple": "#B4009E",
+        "brightRed": "#E74856",
+        "brightWhite": "#F2F2F2",
+        "brightYellow": "#F9F1A5",
+        "cursorColor": "#FFFFFF",
+        "cyan": "#3A96DD",
+        "foreground": "#CCCCCC",
+        "green": "#13A10E",
+        "name": "Campbell",
+        "purple": "#881798",
+        "red": "#C50F1F",
+        "selectionBackground": "#FFFFFF",
+        "white": "#CCCCCC",
+        "yellow": "#C19C00"
+      },
+      {
+        "background": "#000000",
+        "black": "#000000",
+        "blue": "#000080",
+        "brightBlack": "#808080",
+        "brightBlue": "#0000FF",
+        "brightCyan": "#00FFFF",
+        "brightGreen": "#00FF00",
+        "brightPurple": "#FF00FF",
+        "brightRed": "#FF0000",
+        "brightWhite": "#FFFFFF",
+        "brightYellow": "#FFFF00",
+        "cursorColor": "#FFFFFF",
+        "cyan": "#008080",
+        "foreground": "#C0C0C0",
+        "green": "#008000",
+        "name": "Vintage",
+        "purple": "#800080",
+        "red": "#800000",
+        "selectionBackground": "#FFFFFF",
+        "white": "#C0C0C0",
+        "yellow": "#808000"
+      },
+      {
+        "background": "#3D1F16",
+        "black": "#401F10",
+        "blue": "#314573",
+        "brightBlack": "#6E6E6E",
+        "brightBlue": "#5476B7",
+        "brightCyan": "#8CD2E6",
+        "brightGreen": "#9EC54F",
+        "brightPurple": "#B674C2",
+        "brightRed": "#C1443D",
+        "brightWhite": "#FFFFFF",
+        "brightYellow": "#DBA15C",
+        "cursorColor": "#FFFFFF",
+        "cyan": "#4F8A99",
+        "foreground": "#FCE7D2",
+        "green": "#516C57",
+        "name": "RedPanda",
+        "purple": "#82578E",
+        "red": "#B13D14",
+        "selectionBackground": "#4F8A99",
+        "white": "#DBD3CE",
+        "yellow": "#DB8758"
+      }
+    ],
+    "alwaysOnTop": null,
+    "alwaysShowTabs": null,
+    "centerOnLaunch": null,
+    "inputServiceWarning": null,
+    "copyOnSelect": false,
+    "focusFollowMouse": null,
+    "compatability.isolatedMode": null,
+    "copyFormatting": "none",
+    "trimBlockSelection": null,
+    "trimPaste": null,
+    "experimental.detectURLs": null,
+    "experimental.enableColorSelection": null,
+    "disableAnimations": null,
+    "largePasteWarning": null,
+    "multiLinePasteWarning": null,
+    "startupActions": null,
+    "disabledProfileSources": [],
+    "experimental.rendering.forceFullRepaint": null,
+    "experimental.rendering.software": null,
+    "experimental.input.forceVT": null,
+    "experimental.useBackgroundImageForWindow": null,
+    "compatibility.reloadEnvironmentVariables": null,
+    "initialCols": null,
+    "initialPosition": null,
+    "initialRows": null,
+    "startOnUserLogin": null,
+    "firstWindowPreference": null,
+    "launchMode": null,
+    "rowsToScroll": null,
+    "minimizeToNotificationArea": null,
+    "alwaysShowNotificationIcon": null,
+    "showAdminShield": null,
+    "useAcrylicInTabRow": true,
+    "actions": [
+      {
+        "command": {
+          "action": "copy",
+          "singleLine": false
+        },
+        "keys": "ctrl+c"
+      },
+      {
+        "command": "paste",
+        "keys": "ctrl+v"
+      },
+      {
+        "command": "find",
+        "keys": "ctrl+shift+f"
+      },
+      {
+        "command": {
+          "action": "splitPane",
+          "split": "auto",
+          "splitMode": "duplicate"
+        },
+        "keys": "alt+shift+d"
+      }
+    ],
+    "keybindings": null,
+    "newTabMenu": [
+      {
+        "type": "remainingProfiles"
+      }
+    ],
+    "language": null,
+    "theme": null,
+    "themes": [
+      {
+        "name": "legacyDark",
+        "tab": {
+          "background": null,
+          "showCloseButton": "always",
+          "unfocusedBackground": null
+        },
+        "window": {
+          "applicationTheme": "dark",
+          "experimental.rainbowFrame": true,
+          "useMica": false
+        }
+      },
+      {
+        "name": "legacyLight",
+        "tab": {
+          "background": null,
+          "showCloseButton": "always",
+          "unfocusedBackground": null
+        },
+        "window": {
+          "applicationTheme": "light",
+          "useMica": false
+        }
+      },
+      {
+        "name": "legacySystem",
+        "tab": {
+          "background": null,
+          "showCloseButton": "always",
+          "unfocusedBackground": null
+        },
+        "window": {
+          "applicationTheme": "system",
+          "useMica": false
+        }
+      }
+    ],
+    "showTabsInTitlebar": null,
+    "showTerminalTitleInTitlebar": null,
+    "snapToGridOnResize": null,
+    "tabWidthMode": null,
+    "wordDelimiters": null,
+    "confirmCloseAllTabs": null,
+    "useTabSwitcher": null,
+    "tabSwitcherMode": null,
+    "windowingBehavior": null,
+    "newTabPosition": null,
+    "autoHideWindow": null
+  }

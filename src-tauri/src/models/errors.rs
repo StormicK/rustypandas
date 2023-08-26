@@ -4,18 +4,18 @@ use crate::repositories::{
 };
 
 #[derive(Debug)]
-pub enum ConfigurationModelError {
+pub enum ModelError {
     ConfigurationFailedError(),
 }
 
-impl From<TerminalConfigurationRepositoryError> for ConfigurationModelError {
+impl From<TerminalConfigurationRepositoryError> for ModelError {
     fn from(_: TerminalConfigurationRepositoryError) -> Self {
-        ConfigurationModelError::ConfigurationFailedError()
+        ModelError::ConfigurationFailedError()
     }
 }
 
-impl From<GifRepositoryError> for ConfigurationModelError {
+impl From<GifRepositoryError> for ModelError {
     fn from(_: GifRepositoryError) -> Self {
-        ConfigurationModelError::ConfigurationFailedError()
+        ModelError::ConfigurationFailedError()
     }
 }

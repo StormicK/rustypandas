@@ -1,14 +1,17 @@
-use async_trait::async_trait;
 use crate::repositories::configuration::dto::TerminalConfig;
 use crate::repositories::configuration::errors::RepositoryError;
+use async_trait::async_trait;
 
 #[async_trait]
 pub trait TerminalConfigurationRepository {
     async fn get_configuration(&self) -> Result<TerminalConfig, RepositoryError>;
-    async fn update_configuration(&self, configuration: TerminalConfig) -> Result<(), RepositoryError>;
+    async fn update_configuration(
+        &self,
+        configuration: TerminalConfig,
+    ) -> Result<(), RepositoryError>;
 }
 
-#[derive(Debug)]
+#[derive(Debug, Clone)]
 pub struct JsonConfigurationRepository {
     path: String,
 }
@@ -23,12 +26,15 @@ impl JsonConfigurationRepository {
 impl TerminalConfigurationRepository for JsonConfigurationRepository {
     async fn get_configuration(&self) -> Result<TerminalConfig, RepositoryError> {
         let file = tokio::fs::read(&self.path).await.unwrap();
-        
+
         let configuration = serde_json::from_slice(&file).unwrap();
         Ok(configuration)
     }
 
-    async fn update_configuration(&self, configuration: TerminalConfig) -> Result<(), RepositoryError> {
+    async fn update_configuration(
+        &self,
+        configuration: TerminalConfig,
+    ) -> Result<(), RepositoryError> {
         let file = serde_json::to_string_pretty(&configuration).unwrap();
         tokio::fs::write(&self.path, file).await.unwrap();
         Ok(())
