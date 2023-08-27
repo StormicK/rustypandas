@@ -40,3 +40,6 @@ impl TerminalConfigurationRepository for JsonConfigurationRepository {
         Ok(())
     }
 }
+
+#[cfg(test)]
+mod test;

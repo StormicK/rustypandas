@@ -50,6 +50,7 @@ export function useThemeViewModel(): ThemeViewModel {
   };
 
   const fetchAndSetCurrentColorScheme = async () => {
+    await sleep(10);
     const currentColorScheme = await fetchCurrentColorSchemes();
     setSelectedColorScheme(currentColorScheme);
   };
@@ -62,7 +63,7 @@ export function useThemeViewModel(): ThemeViewModel {
   };
 
   const fetchAndSetCurrentProfile = async () => {
-    await sleep(50);
+    await sleep(10);
     const currentProfile = await fetchCurrentProfile();
     setSelectedProfile(currentProfile);
   };
@@ -77,6 +78,7 @@ export function useThemeViewModel(): ThemeViewModel {
 
   Promise.all([loadColorSchemes.refetch(), loadProfiles.refetch()]);
   fetchAndSetCurrentProfile();
+  fetchAndSetCurrentColorScheme();
 
   return {
     gifSearchQuery,

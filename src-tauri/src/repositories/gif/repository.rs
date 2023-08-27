@@ -122,3 +122,6 @@ fn get_random_numbers_as_string() -> String {
 
     result
 }
+
+#[cfg(test)]
+mod test;

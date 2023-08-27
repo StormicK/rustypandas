@@ -3,7 +3,7 @@ use crate::repositories::{
     gif::errors::RepositoryError as GifRepositoryError,
 };
 
-#[derive(Debug)]
+#[derive(Debug, PartialEq)]
 pub enum ModelError {
     ConfigurationFailedError(),
 }

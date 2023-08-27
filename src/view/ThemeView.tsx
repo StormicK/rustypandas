@@ -10,7 +10,7 @@ export function ThemeView() {
       <div class="flex-row">
         {/* Profile Picker */}
         <div class="px-4 pt-4">
-          <h1 class="text-red-panda-text text-2xl font-bold mb-4">Profile</h1>
+          <h1 class="text-red-panda-text text-2xl font-bold mb-4">Profile Selection</h1>
           {ProfilePicker(viewModel)}
         </div>
 

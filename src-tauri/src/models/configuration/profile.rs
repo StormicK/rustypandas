@@ -16,6 +16,7 @@ pub trait ProfileModelTrait {
     async fn set_current_profile(&self, profile: &str) -> Result<(), ModelError>;
     async fn get_current_profile(&self) -> Result<String, ModelError>;
     async fn set_gif(&self, search_query: &str) -> Result<(), ModelError>;
+    async fn get_gif(&self) -> Result<String, ModelError>;
 
     async fn set_color_scheme(&self, color_scheme: &str) -> Result<(), ModelError>;
     async fn get_color_scheme(&self) -> Result<String, ModelError>;
@@ -115,6 +116,29 @@ impl ProfileModelTrait for ProfileModel {
         Ok(current_profile.clone())
     }
 
+    async fn get_gif(&self) -> Result<String, ModelError> {
+        let terminal_config = self.terminal_config_repository.get_configuration().await?;
+
+        let current_profile = self.get_current_profile().await?;
+        let current_profile = terminal_config.profiles.list.iter().find(|profile| {
+            let profile_name = match self.extract_string(&profile, "name") {
+                Ok(s) => s,
+                _ => return false,
+            };
+            profile_name == current_profile
+        });
+
+        let current_profile = match current_profile {
+            Some(value) => value,
+            _ => return Err(ModelError::ConfigurationFailedError()),
+        };
+
+        match self.extract_string(&current_profile, "backgroundImage") {
+            Ok(s) => Ok(s),
+            _ => Err(ModelError::ConfigurationFailedError()),
+        }
+    }
+
     async fn set_gif(&self, search_query: &str) -> Result<(), ModelError> {
         println!("Setting gif to: {}", search_query);
         let mut terminal_config = self.terminal_config_repository.get_configuration().await?;
@@ -196,3 +220,6 @@ impl ProfileModelTrait for ProfileModel {
         }
     }
 }
+
+#[cfg(test)]
+mod test;
