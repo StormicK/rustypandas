@@ -4,9 +4,9 @@ use std::path::PathBuf;
 
 use async_trait::async_trait;
 use dirs::data_local_dir;
+use rand::Rng;
 use reqwest::Client;
 use url::Url;
-use rand::Rng;
 
 use crate::repositories::gif::dto::GiphyResponse;
 use crate::repositories::gif::errors::RepositoryError;
@@ -95,10 +95,9 @@ impl GifRepository for RESTGifRepository {
 
         let giphy_response = response.json::<GiphyResponse>().await?;
 
-        let giphy_data = get_random_item(&giphy_response.data)
-            .ok_or(RepositoryError::NotFoundError(String::from(
-                "No images found",
-            )))?;
+        let giphy_data = get_random_item(&giphy_response.data).ok_or(
+            RepositoryError::NotFoundError(String::from("No images found")),
+        )?;
 
         Ok(self
             .save_url_to_app_directory(&giphy_data.images.original.url)
@@ -119,7 +118,10 @@ fn get_random_numbers_as_string() -> String {
     let mut rng = rand::thread_rng();
     let mut result = String::new();
 
-    result.push_str(&rng.gen_range(0..25).to_string());    
+    result.push_str(&rng.gen_range(0..25).to_string());
 
     result
 }
+
+#[cfg(test)]
+mod test;

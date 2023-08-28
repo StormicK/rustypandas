@@ -1,0 +1,32 @@
+{
+    // See https://go.microsoft.com/fwlink/?LinkId=733558
+    // for the documentation about the tasks.json format
+    "version": "2.0.0",
+    "tasks": [
+        {
+            "label": "ui:dev",
+            "type": "shell",
+            "isBackground": true,
+            "command": "yarn",
+            "args": [
+                "dev"
+            ]
+        },
+        {
+            "label": "ui:build",
+            "type": "shell",
+            "command": "yarn",
+            "args": [
+                "build"
+            ]
+        },
+        {
+            "type": "npm",
+            "script": "build",
+            "group": "build",
+            "problemMatcher": [],
+            "label": "npm: build",
+            "detail": "vite build"
+        }
+    ]
+  }

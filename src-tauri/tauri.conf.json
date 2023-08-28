@@ -8,7 +8,7 @@
   },
   "package": {
     "productName": "rustypandas",
-    "version": "0.0.2"
+    "version": "0.0.4"
   },
   "tauri": {
     "systemTray": {
@@ -38,8 +38,8 @@
         "fullscreen": false,
         "resizable": false,
         "title": "RustyPandas",
-        "width": 430,
-        "height": 240
+        "width": 410,
+        "height": 350
       }
     ]
   }
